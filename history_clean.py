@@ -1,11 +1,19 @@
+import re
+import shutil
+from datetime import datetime
+import os
+
 #// 2024-08-06 Tue 03:57
 
-import re
+#----------------------------------------
 
 
 # print("hello")
+# bhistory = os.path.expanduser("~/.bash_history")
+# bhistory = os.path.expanduser(".bash_history")
+bhistory = os.path.expanduser("history.txt")
 
-bfile = open('.bash_history')
+bfile = open(bhistory)
 bset = set()
 
 # pattern = r'^The'
@@ -13,8 +21,17 @@ bset = set()
 # bfile.readline()
 # print(bfile)
 
+def addLine(bline):
+    bset.add(bline)
+
+
 for line in bfile:
     bline = line.strip()
+
+    if ( re.search(r".*###$", bline) ) :
+        addLine(bline)
+        continue
+
     if bline == '': continue
     if bline == '!': continue
     if bline == '"': continue
@@ -30,6 +47,25 @@ for line in bfile:
     if ( re.search(r"^vim ", bline) ) : continue
     if ( re.search(r"^\$", bline) ) : continue
     if ( re.search(r"^,", bline) ) : continue
+    if ( re.search(r"^sudo apt search", bline) ) : continue
+    if ( re.search(r"^sudo apt info", bline) ) : continue
+    if ( re.search(r"^sudo apt update", bline) ) : continue
+    if ( re.search(r"^vidir ", bline) ) : continue
+    if ( re.search(r"^tree ", bline) ) : continue
+    if ( re.search(r"^rm ", bline) ) : continue
+    if ( re.search(r"^l ", bline) ) : continue
+    if ( re.search(r"^ll ", bline) ) : continue
+    if ( re.search(r"^yt-dlp", bline) ) : continue
+    if ( re.search(r"^target ", bline) ) : continue
+    if ( re.search(r"^source ", bline) ) : continue
+    if ( re.search(r"^\.", bline) ) : continue
+    if ( re.search(r"^\./", bline) ) : continue
+    if ( re.search(r"^\?", bline) ) : continue
+    if ( re.search(r"^:", bline) ) : continue
+    if ( re.search(r"^.{1}$", bline) ) : continue
+
+
+    addLine(bline)
 
     # print(res)
     # if res:
@@ -37,30 +73,56 @@ for line in bfile:
         # break
     # if res: continue
 
-    bset.add(bline)
+    # bset.add(bline)
 
 
-# bset = sorted(bset)
-# bset.sort()
-
-
-# x = 0
-y = ''
+file_out = ''
 for line in sorted(bset):
-    # x += 1
-    # y += str(x) + ' : ' + line + "\n"
-    y += line + "\n"
-    # print(y)
+    file_out += line + "\n"
 
-# y += ''
+# print(file_out)
 
-# print(y)
+# quit()
 
-f = open("history.txt", "w")
-f.write(y)
-f.close()
+current_time = datetime.now()
+dt_string = current_time.strftime("%Y.%m.%d.%H%M%S")
 
-# fout = open('output.txt', 'W')
-# fout.write(line1)
 
-# fout.close()
+
+try:
+    src = bhistory
+    # src = "sssssssxxx"
+    dst = bhistory + "-" + dt_string
+    shutil.copyfile(src, dst)
+
+    f = open(bhistory, "w")
+    # f = open("''", "w")
+    f.write(file_out)
+except:
+    print("error")
+    pass
+else:
+    pass
+finally:
+    if 'f' in locals(): f.close()
+
+
+
+
+
+
+
+
+
+#------------------------------------------------
+
+# yr = current_time.year
+# mo = current_time.month
+# d = current_time.day
+# h = current_time.hour
+# m = current_time.minute
+# s = current_time.second
+
+# dd/mm/YY H:M:S
+# dt_string = current_time.strftime("%d/%m/%Y %H:%M:%S")
+# dt_string = current_time.strftime("%Y.%m.%d.%H%M%S")
