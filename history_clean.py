@@ -7,107 +7,138 @@ import os
 
 #----------------------------------------
 
+# Set history file name:
+filename = "history.txt"
+# filename = "~/.bash_history"
 
-# print("hello")
-# bhistory = os.path.expanduser("~/.bash_history")
-# bhistory = os.path.expanduser(".bash_history")
-bhistory = os.path.expanduser("history.txt")
 
-bfile = open(bhistory)
+
+#----------------------------------------
+
 bset = set()
+file_out = ''
 
-# pattern = r'^The'
-
-# bfile.readline()
-# print(bfile)
-
-def addLine(bline):
+# Add line to set variable
+def add_line(bline):
     bset.add(bline)
 
 
-for line in bfile:
-    bline = line.strip()
+# open file
+bhistory = os.path.expanduser(filename)
+bfile = open(bhistory)
 
-    if ( re.search(r".*###$", bline) ) :
-        addLine(bline)
-        continue
+# regex excludes:
+def exclude_line(bline):
 
-    if bline == '': continue
-    if bline == '!': continue
-    if bline == '"': continue
+    if bline == '': return True
+    elif bline == '!': return True
+    elif bline == '"': return True
     # res = re.search(r"^#", bline)
-    if ( re.search(r"^#", bline) ) : continue
-    if ( re.search(r"^z ", bline) ) : continue
-    if ( re.search(r"^man ", bline) ) : continue
-    if ( re.search(r"^cd ", bline) ) : continue
-    if ( re.search(r"^c ", bline) ) : continue
-    if ( re.search(r"^hs ", bline) ) : continue
-    if ( re.search(r"^~", bline) ) : continue
-    if ( re.search(r"^vi ", bline) ) : continue
-    if ( re.search(r"^vim ", bline) ) : continue
-    if ( re.search(r"^\$", bline) ) : continue
-    if ( re.search(r"^,", bline) ) : continue
-    if ( re.search(r"^sudo apt search", bline) ) : continue
-    if ( re.search(r"^sudo apt info", bline) ) : continue
-    if ( re.search(r"^sudo apt update", bline) ) : continue
-    if ( re.search(r"^vidir ", bline) ) : continue
-    if ( re.search(r"^tree ", bline) ) : continue
-    if ( re.search(r"^rm ", bline) ) : continue
-    if ( re.search(r"^l ", bline) ) : continue
-    if ( re.search(r"^ll ", bline) ) : continue
-    if ( re.search(r"^yt-dlp", bline) ) : continue
-    if ( re.search(r"^target ", bline) ) : continue
-    if ( re.search(r"^source ", bline) ) : continue
-    if ( re.search(r"^\.", bline) ) : continue
-    if ( re.search(r"^\./", bline) ) : continue
-    if ( re.search(r"^\?", bline) ) : continue
-    if ( re.search(r"^:", bline) ) : continue
-    if ( re.search(r"^.{1}$", bline) ) : continue
+    elif ( re.search(r"^#", bline) ) : return True
+    elif ( re.search(r"^z ", bline) ) : return True
+    elif ( re.search(r"^man ", bline) ) : return True
+    elif ( re.search(r"^cd ", bline) ) : return True
+    elif ( re.search(r"^c ", bline) ) : return True
+    elif ( re.search(r"^hs ", bline) ) : return True
+    elif ( re.search(r"^~", bline) ) : return True
+    elif ( re.search(r"^vi ", bline) ) : return True
+    elif ( re.search(r"^vim ", bline) ) : return True
+    elif ( re.search(r"^\$", bline) ) : return True
+    elif ( re.search(r"^,", bline) ) : return True
+    elif ( re.search(r"^sudo apt search", bline) ) : return True
+    elif ( re.search(r"^sudo apt info", bline) ) : return True
+    elif ( re.search(r"^sudo apt update", bline) ) : return True
+    elif ( re.search(r"^vidir ", bline) ) : return True
+    elif ( re.search(r"^tree ", bline) ) : return True
+    elif ( re.search(r"^rm ", bline) ) : return True
+    elif ( re.search(r"^l ", bline) ) : return True
+    elif ( re.search(r"^ll ", bline) ) : return True
+    elif ( re.search(r"^yt-dlp", bline) ) : return True
+    elif ( re.search(r"^target ", bline) ) : return True
+    elif ( re.search(r"^source ", bline) ) : return True
+    elif ( re.search(r"^\.", bline) ) : return True
+    elif ( re.search(r"^\./", bline) ) : return True
+    elif ( re.search(r"^\?", bline) ) : return True
+    elif ( re.search(r"^:", bline) ) : return True
+    elif ( re.search(r"^.{1}$", bline) ) : return True
+
+    return False
 
 
-    addLine(bline)
-
-    # print(res)
-    # if res:
-        # print(res.string)
-        # break
-    # if res: continue
-
-    # bset.add(bline)
+# regex includes:
+def include_line(bline) :
+    if re.search(r".*###$", bline) : return True
 
 
-file_out = ''
-for line in sorted(bset):
-    file_out += line + "\n"
+# Read file line by line
+def read_lines():
 
-# print(file_out)
+  for line in bfile:
+      bline = line.strip()
+
+      # Check for specific includes;
+      if include_line(bline) == True:
+          add_line(bline)
+          continue
+
+      # Check for exclude;
+      # If true, then skip;
+      if exclude_line(bline) == True:
+          continue
+
+      # Include everything else
+      add_line(bline)
+
+
+def sort_lines():
+    file_out = ''
+    for line in sorted(bset):
+        file_out += line + "\n"
+        #file_out += "y"
+
+    return file_out
+
+
+def backup_old_history():
+    try:
+        current_time = datetime.now()
+        dt_string = current_time.strftime("%Y.%m.%d.%H%M%S")
+
+        src = bhistory
+        dst = bhistory + "-" + dt_string
+        shutil.copyfile(src, dst)
+    except:
+        print("error_backup")
+        pass
+    else:
+        pass
+    finally:
+        pass
+
+
+def write_file():
+    try:
+        f = open(bhistory, "w")
+        f.write(file_out)
+    except:
+        print("error_write_file")
+    else:
+        pass
+    finally:
+        if 'f' in locals(): f.close()
+
+
+
+#---------------------------------------------------
+
+read_lines()
+file_out = sort_lines()
+
+backup_old_history()
+write_file()
+
 
 # quit()
-
-current_time = datetime.now()
-dt_string = current_time.strftime("%Y.%m.%d.%H%M%S")
-
-
-
-try:
-    src = bhistory
-    # src = "sssssssxxx"
-    dst = bhistory + "-" + dt_string
-    shutil.copyfile(src, dst)
-
-    f = open(bhistory, "w")
-    # f = open("''", "w")
-    f.write(file_out)
-except:
-    print("error")
-    pass
-else:
-    pass
-finally:
-    if 'f' in locals(): f.close()
-
-
-
 
 
 
@@ -126,3 +157,11 @@ finally:
 # dd/mm/YY H:M:S
 # dt_string = current_time.strftime("%d/%m/%Y %H:%M:%S")
 # dt_string = current_time.strftime("%Y.%m.%d.%H%M%S")
+
+# print(res)
+# if res:
+    # print(res.string)
+    # break
+# if res: continue
+
+# bset.add(bline)
