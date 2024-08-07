@@ -15,17 +15,13 @@ filename = "history.txt"
 
 #----------------------------------------
 
-bset = set()
-file_out = ''
-
 # Add line to set variable
 def add_line(bline):
     bset.add(bline)
+    # bset.append(bline)
+    # add is a set method; not list method;
+    # So this should guarantee creation of set;
 
-
-# open file
-bhistory = os.path.expanduser(filename)
-bfile = open(bhistory)
 
 # regex excludes:
 def exclude_line(bline):
@@ -70,29 +66,12 @@ def include_line(bline) :
     if re.search(r".*###$", bline) : return True
 
 
-# Read file line by line
-def read_lines():
-
-  for line in bfile:
-      bline = line.strip()
-
-      # Check for specific includes;
-      if include_line(bline) == True:
-          add_line(bline)
-          continue
-
-      # Check for exclude;
-      # If true, then skip;
-      if exclude_line(bline) == True:
-          continue
-
-      # Include everything else
-      add_line(bline)
-
-
 def sort_lines():
     file_out = ''
+    # x = 0
     for line in sorted(bset):
+        # x += 1
+        # print(x)
         file_out += line + "\n"
         #file_out += "y"
 
@@ -128,15 +107,61 @@ def write_file():
         if 'f' in locals(): f.close()
 
 
+# Read file line by line
+def read_lines():
+
+    for line in bfile:
+        bline = line.strip()
+
+        # Check for specific includes;
+        if include_line(bline) == True:
+          add_line(bline)
+          continue
+
+        # Check for exclude;
+        # If true, then skip;
+        if exclude_line(bline) == True:
+          continue
+
+        # Include everything else
+        add_line(bline)
+
 
 #---------------------------------------------------
 
+import time
+start = time.time()
+#---------------------------------------------------
+
+
+bset = set()
+file_out = ''
+bfile = ''
+# bset_temp = set()
+
+# open file
+bhistory = os.path.expanduser(filename)
+# bfile = open(bhistory, 'r')
+with open(bhistory, 'r') as ofile:
+    bfile = ofile.readlines()
+
+bfile = set(bfile)
 read_lines()
 file_out = sort_lines()
 
-backup_old_history()
-write_file()
 
+
+#---------------------------------------------------
+end = time.time()
+print(end - start)
+
+
+
+# print(file_out)
+# quit()
+
+# backup_old_history()
+# write_file()
 
 # quit()
 
@@ -165,3 +190,56 @@ write_file()
 # if res: continue
 
 # bset.add(bline)
+
+
+# -------------------
+
+# readline() : reads single line
+# readlines() : read everything into a list object or set; carriage returns are converted to \n; reads a single line of the file
+# read() : reads everything as a single string;
+
+# -------------------
+
+
+# with open(bhistory, 'r') as bfile:
+#     for line in bfile:
+#     print('Total lines:', num_lines) # 8
+
+# # bfile.close()
+#   with open('notes-pycrash.txt') as file_object:
+#       contents = file_object.read()
+#   print(contents)
+#   # No need to close with this syntax
+#  # Can do readline(), readlines() and read()
+#   # readline seemsto read just 1 line;
+#   # readlines reads everything, but carriage returns are converted to \n
+#   # read() reads everything;
+
+#     filename = 'programming.txt'
+#   with open(filename, 'w') as fo:
+#       fo.write("Ixx love programming.\n")
+#       fo.write("Do you love programming?\n")
+#       # And can add more lines like so above;
+
+# myfile = open("demo.txt", "r")
+# myline = myfile.readline()
+# while myline:
+#     print(myline)
+#     myline = myfile.readline()
+# myfile.close()
+
+
+# with open(bhistory, 'r') as ofile:
+#     # When use the 'with' syntax, don't have to close file;
+#     # bset_temp = set(ofile.readline())
+#     # print(ofile.readline())
+#     # bfile = ofile.readline() # read one line
+#     # bfile = ofile.read() # read all
+
+#     bfile = ofile.readlines()
+#     # for myline in mylines
+#     #     bfile += myline + "\n"
+#     #     myline = ofile.readline()
+
+#     # for line in ofile:
+#     #     bset += line.readline
