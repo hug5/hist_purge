@@ -1,19 +1,30 @@
 import re
 import shutil
-from datetime import datetime
 import os
+import time
+
+
+#---------------------------------------------------
 
 #// 2024-08-06 Tue 03:57
 
-#----------------------------------------
+#---------------------------------------------------
+start = time.time()
+
+#---------------------------------------------------
+# Global variables
 
 # Set history file name:
 filename = "history.txt"
 # filename = "~/.bash_history"
 
+bset = set()
+bfile = ''
+bhistory = ''
 
 
-#----------------------------------------
+#---------------------------------------------------
+
 
 # Add line to set variable
 def add_line(bline):
@@ -67,28 +78,32 @@ def include_line(bline) :
 
 
 def sort_lines():
-    file_out = ''
+    file2 = ''
     # x = 0
     for line in sorted(bset):
         # x += 1
         # print(x)
-        file_out += line + "\n"
-        #file_out += "y"
+        file2 += line + "\n"
+        #file2 += "y"
 
-    return file_out
+    return file2
 
 
 def backup_old_history():
     try:
-        current_time = datetime.now()
-        dt_string = current_time.strftime("%Y.%m.%d.%H%M%S")
+        # current_time = datetime.now()
+        # dt_string = current_time.strftime("%Y.%m.%d.%H%M%S")
+
+        t = time.time()
+        dt_string = time.strftime("%y%m%d%H%M%S", time.localtime(t))
 
         src = bhistory
+
         dst = bhistory + "-" + dt_string
         shutil.copyfile(src, dst)
     except:
         print("error_backup")
-        pass
+        # pass
     else:
         pass
     finally:
@@ -97,15 +112,17 @@ def backup_old_history():
 
 def write_file():
     try:
-        f = open(bhistory, "w")
-        f.write(file_out)
+        # f = open(bhistory, "w")
+        # f.write(file_out)
+        with open(bhistory, "w") as f:
+            f.write(file_out)
     except:
         print("error_write_file")
     else:
         pass
     finally:
-        if 'f' in locals(): f.close()
-
+        # if 'f' in locals(): f.close()
+        pass
 
 # Read file line by line
 def read_lines():
@@ -126,48 +143,35 @@ def read_lines():
         # Include everything else
         add_line(bline)
 
+def open_file():
+    # open file
+    global bfile, bhistory
+    bhistory = os.path.expanduser(filename)
+    # bfile = open(bhistory, 'r')
+    with open(bhistory, 'r') as ofile:
+        bfile = ofile.readlines()
+    bfile = set(bfile)
+
 
 #---------------------------------------------------
 
-import time
-start = time.time()
-#---------------------------------------------------
-
-
-bset = set()
-file_out = ''
-bfile = ''
-# bset_temp = set()
-
-# open file
-bhistory = os.path.expanduser(filename)
-# bfile = open(bhistory, 'r')
-with open(bhistory, 'r') as ofile:
-    bfile = ofile.readlines()
-
-bfile = set(bfile)
+open_file()
 read_lines()
 file_out = sort_lines()
+backup_old_history()
+# write_file()
 
+# print(file_out)
 
 
 #---------------------------------------------------
-end = time.time()
-print(end - start)
+# Display elapsed time:
 
+print( (str(time.time() - start))[:5] + " secs" )
 
+#---------------------------------------------------
 
-# print(file_out)
-# quit()
-
-# backup_old_history()
 # write_file()
-
-# quit()
-
-
-
-
 
 
 #------------------------------------------------
@@ -243,3 +247,23 @@ print(end - start)
 
 #     # for line in ofile:
 #     #     bset += line.readline
+
+
+# import time
+
+# from datetime import datetime as dt
+# print( time.time() )
+# print ( dt.timestamp(dt.now()) )
+
+# t = time.time()
+
+# local = time.strftime('%y-%m-%d %H:%M %Z', time.localtime(t))
+# local2 = time.strftime('%y-%m-%d %H:%M:%S %Z')
+# #'2019-05-27 12:03 CEST'
+
+# gm = time.strftime('%Y-%m-%d %H:%M %Z', time.gmtime(t))
+# #'2019-05-27 10:03 GMT'
+
+# print(local)
+# print(local2)
+# print(gm)
