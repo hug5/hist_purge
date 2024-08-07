@@ -101,14 +101,19 @@ def backup_old_history():
 
         dst = bhistory + "-" + dt_string
         shutil.copyfile(src, dst)
-    except:
-        print("error_backup")
+    # except:
+    except Exception as e:
+        print_error_traceback(e, "Backup Error")
         # pass
     else:
         pass
     finally:
         pass
 
+def print_error_traceback(e, msg=None):
+    if msg: print(msg)
+    print(e.args)
+    print(e.with_traceback)
 
 def write_file():
     try:
@@ -132,20 +137,21 @@ def read_lines():
 
         # Check for specific includes;
         if include_line(bline) == True:
-          add_line(bline)
-          continue
+            add_line(bline)
+            continue
 
         # Check for exclude;
         # If true, then skip;
         if exclude_line(bline) == True:
-          continue
+            continue
 
         # Include everything else
         add_line(bline)
 
 def open_file():
     # open file
-    global bfile, bhistory
+    # global bfile, bhistory
+    global bfile
     bhistory = os.path.expanduser(filename)
     # bfile = open(bhistory, 'r')
     with open(bhistory, 'r') as ofile:
