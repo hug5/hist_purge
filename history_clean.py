@@ -19,7 +19,7 @@ class history_clean():
         self.filename = ""
             # history path/file; from config;
         # self.bhistory = ''
-        self.filename_os= ''
+        self.filename_os = ''
             # history path, fully expanded
 
         self.sort_history = True
@@ -70,7 +70,8 @@ class history_clean():
             # f = open(bhistory, "w")
             # f.write(file_out)
             # with open(self.filename_os, "w") as f:
-            with open("history2.txt", "w") as f:
+            # with open("history2.txt", "w") as f:
+            with open(self.filename_os, "w") as f:
                 f.write(self.file_out)
 
             # print("done")
@@ -339,6 +340,7 @@ class history_clean():
             # self.rules_containing_include = config['filter_rules']['containing_include']
 
 
+
         except Exception as e:
             self.print_error_traceback(e, "Config Load Error")
 
@@ -346,8 +348,8 @@ class history_clean():
     def start(self):
 
         start = time.time()
-        self.load_conf()
 
+        self.load_conf()
         self.open_file()
         self.read_lines()
         self.sort_lines()

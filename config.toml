@@ -1,10 +1,12 @@
-
-
 [settings]
 
+history_file = "history2.txt"
+
+#history_file = "~/.bash_history"
 #history_file = "history.txt"
 #history_file = ".bash_history"
-history_file = "bash_history"
+#history_file = "bash_history"
+
 
 # Sort history lines: true or false; must be lowercase;
 sort_lines = true
@@ -43,6 +45,13 @@ regex_include = [
 ]
 
 regex_exclude = [
+  "^touch ",
+  "^hs ",
+  "^trash",
+  "^locate ",
+  "^whereis ",
+  "^which ",
+  "^whois ",
   "^df ",
   "^ffmpeg ",
   "^npm ",
@@ -74,8 +83,10 @@ regex_exclude = [
   "^l ",
   "^ll ",
   "^yt-dlp",
-  "^target ",
-  "^source ",
+  "^target=",
+  "^target.",
+  "^source.",
+  "^source=",
   "^./",
   "^\\?",
   "^:",
