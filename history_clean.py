@@ -2,6 +2,7 @@ import re
 import shutil
 import os
 import time
+import toml
 
 
 #---------------------------------------------------
@@ -13,125 +14,62 @@ import time
 
 class history_clean():
 
-
     def __init__(self):
 
-        self.filename = "history.txt"
-        # filename = "~/.bash_history"
+        self.filename = ""
+            # history path/file; from config;
+        # self.bhistory = ''
+        self.filename_os= ''
+            # history path, fully expanded
 
-        self.bset = set()
-        self.bfile = ''
-        self.bhistory = ''
+        self.sort_history = True
+            # sort or not sort history
+        self.bfile1 = set()
+            # Original history, but unduplicated
+        self.bfile2 = []
+            # Filtered history list
+
         self.file_out = ''
-        print("hello")
+            # final String file to save to disk
+
+        # Filter dictionary:
+        self.filter_rules = {
+            "include" : {
+                "exact" : [],
+                "containing" : [],
+                "regex" : []
+            },
+            "exclude" : {
+                "exact" : [],
+                "containing" : [],
+                "regex" : []
+            }
+        }
+
+        # self.regex_include = []
+        # self.regex_exclude = []
+        # self.containing_include = []
+        # self.containing_exclude = []
+        # self.exact_include = []
+        # self.exact_exclude = []
 
         self.start()
+
         pass
 
-    def start(self):
-
-        self.open_file()
-        self.read_lines()
-        self.sort_lines()
-        self.backup_old_history()
-        # write_file()
-        # print(file_out)
-
-
-    # Add line to set variable
-    def add_line(self, bline):
-        self.bset.add(bline)
-        # bset.append(bline)
-        # add is a set method; not list method;
-        # So this should guarantee creation of set;
-
-
-    # regex excludes:
-    def exclude_line(self, bline):
-
-        if bline == '': return True
-        elif bline == '!': return True
-        elif bline == '"': return True
-        # res = re.search(r"^#", bline)
-        elif ( re.search(r"^#", bline) ) : return True
-        elif ( re.search(r"^z ", bline) ) : return True
-        elif ( re.search(r"^man ", bline) ) : return True
-        elif ( re.search(r"^cd ", bline) ) : return True
-        elif ( re.search(r"^c ", bline) ) : return True
-        elif ( re.search(r"^hs ", bline) ) : return True
-        elif ( re.search(r"^~", bline) ) : return True
-        elif ( re.search(r"^vi ", bline) ) : return True
-        elif ( re.search(r"^vim ", bline) ) : return True
-        elif ( re.search(r"^\$", bline) ) : return True
-        elif ( re.search(r"^,", bline) ) : return True
-        elif ( re.search(r"^sudo apt search", bline) ) : return True
-        elif ( re.search(r"^sudo apt info", bline) ) : return True
-        elif ( re.search(r"^sudo apt update", bline) ) : return True
-        elif ( re.search(r"^vidir ", bline) ) : return True
-        elif ( re.search(r"^tree ", bline) ) : return True
-        elif ( re.search(r"^rm ", bline) ) : return True
-        elif ( re.search(r"^l ", bline) ) : return True
-        elif ( re.search(r"^ll ", bline) ) : return True
-        elif ( re.search(r"^yt-dlp", bline) ) : return True
-        elif ( re.search(r"^target ", bline) ) : return True
-        elif ( re.search(r"^source ", bline) ) : return True
-        elif ( re.search(r"^\.", bline) ) : return True
-        elif ( re.search(r"^\./", bline) ) : return True
-        elif ( re.search(r"^\?", bline) ) : return True
-        elif ( re.search(r"^:", bline) ) : return True
-        elif ( re.search(r"^.{1}$", bline) ) : return True
-
-        return False
-
-
-    # regex includes:
-    def include_line(self, bline) :
-        if re.search(r".*###$", bline) : return True
-
-
-    def sort_lines(self):
-        file_out = ''
-        # x = 0
-        for line in sorted(self.bset):
-            # x += 1
-            # print(x)
-            file_out += line + "\n"
-            #file_out += "y"
-
-        self.fileout = file_out
-
-
-    def backup_old_history(self):
-        try:
-            # current_time = datetime.now()
-            # dt_string = current_time.strftime("%Y.%m.%d.%H%M%S")
-
-            t = time.time()
-            dt_string = time.strftime("%y%m%d%H%M%S", time.localtime(t))
-
-            src = self.bhistory
-
-            dst = self.bhistory + "-" + dt_string
-            shutil.copyfile(src, dst)
-        # except:
-        except Exception as e:
-            print_error_traceback(e, "Backup Error")
-            # pass
-        else:
-            pass
-        finally:
-            pass
 
     def print_error_traceback(self, e, msg=None):
         if msg: print(msg)
         print(e.args)
         print(e.with_traceback)
 
+
     def write_file(self):
         try:
             # f = open(bhistory, "w")
             # f.write(file_out)
-            with open(self.bhistory, "w") as f:
+            # with open(self.filename_os, "w") as f:
+            with open("history2.txt", "w") as f:
                 f.write(self.file_out)
 
         except Exception as e:
@@ -143,36 +81,249 @@ class history_clean():
             # if 'f' in locals(): f.close()
             pass
 
+
+    def backup_old_history(self):
+        try:
+            # current_time = datetime.now()
+            # dt_string = current_time.strftime("%Y.%m.%d.%H%M%S")
+
+            t = time.time()
+            dt_string = time.strftime("%y%m%d%H%M%S", time.localtime(t))
+
+            src = self.filename_os
+#
+            dst = src + "-" + dt_string
+            shutil.copyfile(src, dst)
+        # except:
+        except Exception as e:
+            self.print_error_traceback(e, "Backup Error")
+            # pass
+        else:
+            pass
+        finally:
+            pass
+
+
+    def sort_lines(self):
+        file_out = ''
+
+        if self.sort_history == True:
+            self.bfile1 = sorted(self.bfile1)
+            # this will change bfile1 from set to list
+
+        for line in self.bfile1:
+            # x += 1
+            # print(x)
+            file_out += line + "\n"
+            #file_out += "y"
+
+        self.bfile1 = []   # empty out list
+        self.file_out = file_out
+
+
+    # Add line to set variable
+    def add_line(self, bline):
+        self.bfile1.add(bline)
+        # bset.append(bline)
+        # add is a set method; not list method;
+        # So this should guarantee creation of set;
+
+
+    def exclude_line(self, bline):
+        # for pattern in self.rules_exclude:
+            # if re.search(r".*###$", bline) : return True
+            # if re.search(r_include, bline) : return True
+            # if re.search(pattern, bline):
+        #     if re.search(pattern, bline):
+        #         print(pattern)
+        #         print(bline)
+        #         print("exclude rule")
+        #         # quit()
+        #         return True
+
+        # return False
+
+
+        for pattern in self.filter_rules['exclude']["exact"]:
+            if pattern == bline:
+                print(pattern + " : " + bline)
+                return True
+
+        for pattern in self.filter_rules['exclude']["containing"]:
+            if bline.find(pattern) >= 0:
+                print(pattern + " : " + bline)
+                return True
+
+        for pattern in self.filter_rules['exclude']["regex"]:
+            if re.search(pattern, bline):
+                # return True
+                print(pattern + " : " + bline)
+                return True
+
+        # print("false")
+        return False
+
+
+
+        ###
+            # if bline == '': return True
+            # elif bline == '!': return True
+            # elif bline == '"': return True
+            # # res = re.search(r"^#", bline)
+            # elif ( re.search(r"^#", bline) ) : return True
+            # elif ( re.search(r"^z ", bline) ) : return True
+            # elif ( re.search(r"^man ", bline) ) : return True
+            # elif ( re.search(r"^cd ", bline) ) : return True
+            # elif ( re.search(r"^c ", bline) ) : return True
+            # elif ( re.search(r"^hs ", bline) ) : return True
+            # elif ( re.search(r"^~", bline) ) : return True
+            # elif ( re.search(r"^vi ", bline) ) : return True
+            # elif ( re.search(r"^vim ", bline) ) : return True
+            # elif ( re.search(r"^\$", bline) ) : return True
+            # elif ( re.search(r"^,", bline) ) : return True
+            # elif ( re.search(r"^sudo apt search", bline) ) : return True
+            # elif ( re.search(r"^sudo apt info", bline) ) : return True
+            # elif ( re.search(r"^sudo apt update", bline) ) : return True
+            # elif ( re.search(r"^vidir ", bline) ) : return True
+            # elif ( re.search(r"^tree ", bline) ) : return True
+            # elif ( re.search(r"^rm ", bline) ) : return True
+            # elif ( re.search(r"^l ", bline) ) : return True
+            # elif ( re.search(r"^ll ", bline) ) : return True
+            # elif ( re.search(r"^yt-dlp", bline) ) : return True
+            # elif ( re.search(r"^target ", bline) ) : return True
+            # elif ( re.search(r"^source ", bline) ) : return True
+            # elif ( re.search(r"^\.", bline) ) : return True
+            # elif ( re.search(r"^\./", bline) ) : return True
+            # elif ( re.search(r"^\?", bline) ) : return True
+            # elif ( re.search(r"^:", bline) ) : return True
+            # elif ( re.search(r"^.{1}$", bline) ) : return True
+            # return False
+
+
+    def include_line(self, bline) :
+
+        # for pattern in self.rules_include:
+        # for pattern in self.regex_include:
+        #     # if re.search(r".*###$", bline) : return True
+        #     # if re.search(pattern, bline) : return True
+        #     # if re.search(pattern, bline):
+        #     if re.search(pattern, bline):
+        #         # return True
+        #         print("include" + bline)
+        #         return True
+        # return False
+
+        for pattern in self.filter_rules['include']["exact"]:
+            if pattern == bline:
+                print(pattern + " : " + bline)
+                return True
+
+        for pattern in self.filter_rules['include']["containing"]:
+            if bline.find(pattern) >= 0:
+                print(pattern + " : " + bline)
+                return True
+
+        for pattern in self.filter_rules['include']["regex"]:
+            if re.search(pattern, bline):
+                # return True
+                print(pattern + " : " + bline)
+                return True
+
+        # print("false")
+        return False
+
+
     # Read file line by line
     def read_lines(self):
 
-        for line in self.bfile:
+        for line in self.bfile2:
             bline = line.strip()
 
             # Check for specific includes;
-            if self.include_line(bline) == True:
-                self.add_line(bline)
-                continue
+            # if self.include_line(bline) == True:
+            #     # print("adding1" + bline)
+            #     # self.add_line(bline)
+            #     continue
 
             # Check for exclude;
             # If true, then skip;
             if self.exclude_line(bline) == True:
+                # print("excluding2" + bline)
                 continue
 
+
+        quit()
+
+
+            # print("adding3" + bline)
+
+
             # Include everything else
-            self.add_line(bline)
+            # self.add_line(bline)
 
     def open_file(self):
         # open file
         # self.global bfile, bhistory
-        # global bfile
-        self.bhistory = os.path.expanduser(self.filename)
+        global bfile
+        self.filename_os= os.path.expanduser(self.filename)
         # bfile = open(bhistory, 'r')
-        with open(self.bhistory, 'r') as ofile:
-            self.bfile = ofile.readlines()
-        self.bfile = set(self.bfile)
+        with open(self.filename_os, 'r') as ofile:
+            self.bfile2 = ofile.readlines()
+
+        # make list into set
+        self.bfile2 = set(self.bfile2)
 
 
+    def load_conf(self):
+
+        try:
+            with open('config.toml', 'r') as ftoml:
+                config = toml.load(ftoml)
+
+
+            self.filename = config['settings']['history_file']
+            self.sort_history = config['settings']['sort_lines']
+
+            # self.filter_rules["include"]["exact"] = config['filter_rules']['exact_include']
+            self.filter_rules["include"]["exact"] = config['filter_rules']['exact_include']
+            self.filter_rules["exclude"]["exact"] = config['filter_rules']['exact_exclude']
+
+            self.filter_rules["include"]["containing"] = config['filter_rules']['containing_include']
+            self.filter_rules["exclude"]["containing"] = config['filter_rules']['containing_exclude']
+
+            self.filter_rules["include"]["regex"] = config['filter_rules']['regex_include']
+            self.filter_rules["exclude"]["regex"] = config['filter_rules']['regex_exclude']
+
+            # print(self.filter_rules)
+            # quit()
+            # self.filter_rules["exclude"]["exact"] = config['filter_rules']['exact_exclude']
+            # self.filter_rules["include"]["regex"] = config['filter_rules']['regex_include']
+            # self.filter_rules["exclude"]["regex"] = config['filter_rules']['regex_exclude']
+            # self.filter_rules["include"]["containing"] = config['filter_rules']['containing_include']
+            # self.filter_rules["exclude"]["containing"] = config['filter_rules']['containing_exclude']
+
+            # self.rules_exact_exclude = config['filter_rules']['exact_exclude']
+            # self.rules_exact_include = config['filter_rules']['exact_include']
+            # self.rules_regex_exclude = config['filter_rules']['regex_exclude']
+            # self.rules_regex_include = config['filter_rules']['regex_include']
+            # self.rules_containing_exclude = config['filter_rules']['containing_exclude']
+            # self.rules_containing_include = config['filter_rules']['containing_include']
+
+
+        except Exception as e:
+            self.print_error_traceback(e, "Config Load Error")
+
+
+    def start(self):
+
+        self.load_conf()
+
+        self.open_file()
+        self.read_lines()
+        self.sort_lines()
+        self.backup_old_history()
+        self.write_file()
+        # print(file_out)
 
 
 start = time.time()

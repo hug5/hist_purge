@@ -1,0 +1,69 @@
+
+
+[settings]
+
+history_file = "history.txt"
+
+# Sort history lines: true or false; must be lowercase;
+sort_lines = true
+
+
+
+[filter_rules]
+
+# Exact match
+exact_include = [
+
+]
+
+exact_exclude = [
+  "",
+  "!",
+  ".",
+]
+
+
+# substring match; this matches anywhere;
+containing_include = [
+  "###",
+]
+containing_exclude = [
+
+]
+
+
+# Regex expression; regex characters should be double escaped, \\, if want to use as literal
+regex_include = [
+  # ".*###$"  # specifically target ending with ###
+]
+
+regex_exclude = [
+  "^sudo apt search",
+  "^sudo apt info",
+  "^sudo apt update",
+  "^z ",
+  "^.{1}$",    # Any single character
+  "^\\.",
+  "^#",
+  "^man ",
+  "^cd ",
+  "^c ",
+  "^hs ",
+  "^~",
+  "^vi ",
+  "^vim ",
+  "^$",
+  "^,",
+  "^vidir ",
+  "^tree ",
+  "^rm ",
+  "^l ",
+  "^ll ",
+  "^yt-dlp",
+  "^target ",
+  "^source ",
+  "^./",
+  "^\\?",
+  "^:",
+  # "^[ \\t\\r\\n]*$",   # regex way to remove blank
+]
