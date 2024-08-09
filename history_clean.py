@@ -24,10 +24,11 @@ class history_clean():
 
         self.sort_history = True
             # sort or not sort history
-        self.bfile1 = set()
+        self.bfile1 = []
             # Original history, but unduplicated
-        self.bfile2 = []
+        self.bfile2 = {}
             # Filtered history list
+        self.bfile3 = []
 
         self.file_out = ''
             # final String file to save to disk
@@ -72,6 +73,9 @@ class history_clean():
             with open("history2.txt", "w") as f:
                 f.write(self.file_out)
 
+            # print("done")
+            # print(self.file_out)
+
         except Exception as e:
             self.print_error_traceback(e, "Error Write File")
 
@@ -105,29 +109,35 @@ class history_clean():
 
 
     def sort_lines(self):
-        file_out = ''
+        # file_out = ''
 
         if self.sort_history == True:
-            self.bfile1 = sorted(self.bfile1)
+            self.bfile3 = sorted(self.bfile3)
             # this will change bfile1 from set to list
 
-        for line in self.bfile1:
-            # x += 1
-            # print(x)
-            file_out += line + "\n"
-            #file_out += "y"
+        # file_out = ''
+        # for line in self.bfile3:
+        #     # x += 1
+        #     # print(x)
+        #     file_out += line + "\n"
+        #     #file_out += "y"
 
-        self.bfile1 = []   # empty out list
-        self.file_out = file_out
+        self.file_out = "\n".join(self.bfile3)
+        # self.file_out = file_out
+
+        self.bfile3 = []   # empty out list
+        # self.file_out = file_out
 
 
     # Add line to set variable
-    def add_line(self, bline):
-        self.bfile1.add(bline)
-        # bset.append(bline)
-        # add is a set method; not list method;
-        # So this should guarantee creation of set;
-
+    # def add_line(self, bline):
+    #     # self.bfile1.add(bline)    # set
+    #     # self.bfile1.append(bline)   # list
+    #     # lll.append(bline)   # list
+    #     # bset.append(bline)
+    #     # add is a set method; not list method;
+    #     # So this should guarantee creation of set;
+    #     pass
 
     def exclude_line(self, bline):
         # for pattern in self.rules_exclude:
@@ -146,21 +156,24 @@ class history_clean():
 
         for pattern in self.filter_rules['exclude']["exact"]:
             if pattern == bline:
-                print(pattern + " : " + bline)
+                # print(pattern + " : " + bline)
+                # print("✕", end ="")
                 return True
 
         for pattern in self.filter_rules['exclude']["containing"]:
             if bline.find(pattern) >= 0:
-                print(pattern + " : " + bline)
+                # print(pattern + " : " + bline)
+                # print("✖", end ="")
                 return True
 
         for pattern in self.filter_rules['exclude']["regex"]:
             if re.search(pattern, bline):
-                # return True
-                print(pattern + " : " + bline)
+                # print(pattern + " : " + bline)
+                # print("x", end ="")
                 return True
 
         # print("false")
+        # print(".", end ="")
         return False
 
 
@@ -215,18 +228,21 @@ class history_clean():
 
         for pattern in self.filter_rules['include']["exact"]:
             if pattern == bline:
-                print(pattern + " : " + bline)
+                # print(pattern + " : " + bline)
+                # print("◌", end ="")
                 return True
 
         for pattern in self.filter_rules['include']["containing"]:
             if bline.find(pattern) >= 0:
-                print(pattern + " : " + bline)
+                # print(pattern + " : " + bline)
+                # print("◍", end ="")
                 return True
 
         for pattern in self.filter_rules['include']["regex"]:
             if re.search(pattern, bline):
                 # return True
-                print(pattern + " : " + bline)
+                # print(pattern + " : " + bline)
+                # print("o", end ="")
                 return True
 
         # print("false")
@@ -236,42 +252,55 @@ class history_clean():
     # Read file line by line
     def read_lines(self):
 
+        # bfile3 = []
+
+        c = 0
         for line in self.bfile2:
+
+            # print(".", end ="")
             bline = line.strip()
+            # print(bline)
 
             # Check for specific includes;
-            # if self.include_line(bline) == True:
-            #     # print("adding1" + bline)
-            #     # self.add_line(bline)
-            #     continue
+            if self.include_line(bline) == True:
+                # print("adding1" + bline)
+                # lll = self.add_line(bline)
+                # self.bfile3.append(bline)
+
+                # print("x", end ="")
+                self.bfile3 += [bline]
+                continue
 
             # Check for exclude;
             # If true, then skip;
             if self.exclude_line(bline) == True:
                 # print("excluding2" + bline)
+                # print(".", end ="")
                 continue
 
-
-        quit()
-
-
-            # print("adding3" + bline)
-
-
             # Include everything else
-            # self.add_line(bline)
+            # lll = self.add_line(bline)
+            # self.bfile3.append(bline)
+            # print(".", end ="")
+            self.bfile3 += [bline]
+
+
+        # print(".")
+        # self.bfile3 = bfile3
+
 
     def open_file(self):
         # open file
         # self.global bfile, bhistory
-        global bfile
+        # global bfile
         self.filename_os= os.path.expanduser(self.filename)
         # bfile = open(bhistory, 'r')
         with open(self.filename_os, 'r') as ofile:
-            self.bfile2 = ofile.readlines()
+            self.bfile1 = ofile.readlines()
 
         # make list into set
-        self.bfile2 = set(self.bfile2)
+        self.bfile2 = set(self.bfile1)
+
 
 
     def load_conf(self):
@@ -316,6 +345,7 @@ class history_clean():
 
     def start(self):
 
+        start = time.time()
         self.load_conf()
 
         self.open_file()
@@ -323,10 +353,12 @@ class history_clean():
         self.sort_lines()
         self.backup_old_history()
         self.write_file()
+
+        print("Done.")
+        print( (str(time.time() - start))[:5] + " seconds." )
         # print(file_out)
 
 
-start = time.time()
 
 if __name__ == '__main__':
     history_clean()
@@ -335,7 +367,6 @@ if __name__ == '__main__':
 #---------------------------------------------------
 # Display elapsed time:
 
-print( (str(time.time() - start))[:5] + " secs" )
 
 
 

@@ -2,7 +2,9 @@
 
 [settings]
 
-history_file = "history.txt"
+#history_file = "history.txt"
+#history_file = ".bash_history"
+history_file = "bash_history"
 
 # Sort history lines: true or false; must be lowercase;
 sort_lines = true
@@ -20,12 +22,15 @@ exact_exclude = [
   "",
   "!",
   ".",
+  "cp",
+  "c",
+  "clear"
 ]
 
 
 # substring match; this matches anywhere;
 containing_include = [
-  "###",
+  #"###",
 ]
 containing_exclude = [
 
@@ -34,10 +39,18 @@ containing_exclude = [
 
 # Regex expression; regex characters should be double escaped, \\, if want to use as literal
 regex_include = [
-  # ".*###$"  # specifically target ending with ###
+  ".*###$"  # specifically target ending with ###
 ]
 
 regex_exclude = [
+  "^df ",
+  "^ffmpeg ",
+  "^npm ",
+  "^git",
+  "^duplicity",
+  "^yt-dlp",
+  "^g ",
+  # "^find ",
   "^sudo apt search",
   "^sudo apt info",
   "^sudo apt update",
@@ -45,6 +58,7 @@ regex_exclude = [
   "^.{1}$",    # Any single character
   "^\\.",
   "^#",
+  "^!",
   "^man ",
   "^cd ",
   "^c ",
