@@ -420,13 +420,14 @@ class history_clean():
         self.swatch(x)
 
 
-# def main():
-#     history_clean()
+def run():
+    mug = history_clean()
     # pass
 
 
-# if __name__ == '__main__':
-#     history_clean()
+if __name__ == '__main__':
+    mug = history_clean()
+    # history_clean()
 
 
 
