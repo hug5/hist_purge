@@ -1,4 +1,4 @@
-import re, shutil, os, time, toml
+import re, shutil, os, time, tomli
 import sys
 
 #---------------------------------------------------
@@ -53,19 +53,20 @@ class history_clean():
 
 
     def print_error_traceback(self, e, msg=None):
-        if msg: print(msg);
+
+        if msg: print("Error: " + msg)
+        print(e)          # __str__ allows args to be printed directly,
+        print("Type: " + str(type(e)))    # the exception type
+
+        # Exit
+        raise SystemExit
 
         # if e.args: print(e.args)
         # # print(e.args[1])
+        # print(e.args)     # arguments stored in .args
         # print(e.with_traceback)
         # raise
         # raise SystemExit
-
-
-        print(type(e))    # the exception type
-        print(e.args)     # arguments stored in .args
-        print(e)          # __str__ allows args to be printed directly,
-        raise SystemExit
 
         # exit()
         # sys.exit() # requires sys module
@@ -280,14 +281,13 @@ class history_clean():
 
 
 
-    def open_file(self):
+    def open_history_file(self):
 
         try:
             # filename_os = os.path.expanduser(self.filename)
             # bfile = open(bhistory, 'r')
             with open(self.filename, 'r') as ofile:
                 self.bfile2 = ofile.readlines()
-
 
             # make list into set
             # self.bfile2 = set(self.bfile2)
@@ -307,10 +307,41 @@ class history_clean():
         # https://docs.python.org/3/reference/simple_stmts.html#raise
         # https://docs.python.org/3/tutorial/errors.html#user-defined-exceptions
 
+        # Get user's home directory:
+        user_home = os.path.expanduser("~/")
+        config_file1 = "hist_purge.toml"
+        config_file2 = ".hist_purge.toml"
+        config_path = ''  # the found path location of config.toml
+
+
+        # precedence: ./.hist, ./hist, ~/.hist, ~/hist
+        # Current folder has precedence; then home; hidden has precedence over normal;
 
         try:
-            with open('config.toml', 'r') as ftoml:
-                config = toml.load(ftoml)
+            if os.path.isfile(config_file2):
+                config_path = config_file2
+            elif os.path.isfile(config_file1):
+                config_path = config_file1
+            elif os.path.isfile(user_home + config_file2):
+                config_path = user_home + config_file2
+            elif os.path.isfile(user_home + config_file1):
+                config_path = user_home + config_file1
+            else:
+                raise FileNotFoundError("Could not find " + config_file1 + " conf file")
+
+        except FileNotFoundError as e:
+            self.print_error_traceback(e, "No " + config_file1)
+
+
+
+        # user_config = user_home + ".config"
+        # print(user_home + ", " + user_config)
+        # raise SystemExit
+
+
+        try:
+            with open(config_path, 'rb') as ftoml:
+                config = tomli.load(ftoml)
               # If bad, should give FileNotFoundError
 
             self.filename = config['history_source_file']
@@ -375,18 +406,22 @@ class history_clean():
             # print( toml.dumps(self.filter_rules) )
             # raise SystemExit
 
+        except tomli.TOMLDecodeError as e:
+            self.print_error_traceback(e, "Improper toml configuration.")
         except FileNotFoundError as e:
-            self.print_error_traceback(e, "No config.toml file")
+            self.print_error_traceback(e, "No config file.")
         except NameError as e:
             self.print_error_traceback(e)
         except ValueError as e:
-            self.print_error_traceback(e, "Bad config key value")
+            self.print_error_traceback(e, "Bad config key value.")
         except KeyError as e:
-            self.print_error_traceback(e, "Missing config key")
+            self.print_error_traceback(e, "Missing config key.")
         except Exception as e:
-            self.print_error_traceback(e, "Config load error")
+            self.print_error_traceback(e, "Config load error.")
             # Hopefully this catches anything else;
 
+        # print(config)
+        # exit()
         # raise SystemExit
 
 
@@ -405,10 +440,9 @@ class history_clean():
     def start(self):
 
         x = self.swatch()
-        # raise SystemExit
 
         self.load_conf()
-        self.open_file()
+        self.open_history_file()
         self.make_set()
         self.read_lines()
         self.sort_lines()
@@ -421,14 +455,19 @@ class history_clean():
 
 
 def run():
-    mug = history_clean()
+    jug = history_clean()
+
     # pass
 
 
 if __name__ == '__main__':
-    mug = history_clean()
+    jug = history_clean()
+    # jug.start()
     # history_clean()
 
+# mug
+# jug
+# clug
 
 
 
@@ -548,3 +587,5 @@ if __name__ == '__main__':
     #     print("no")
 
     # raise SystemExit
+
+
