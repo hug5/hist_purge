@@ -1,0 +1,130 @@
+# [build-system]
+
+# requires = [
+#     "setuptools >= 72.1.0",
+#     "wheel >= 0.44",
+#     "toml >= 0.10.2",
+# ]
+
+# requires-python = ">=3.8"
+
+# build-backend = "setuptools.build_meta"
+
+# [project]
+
+# name = "history_clean"
+# version = "0.1.0"
+# dependencies = [
+#     "toml",
+# ]
+
+
+# [options.entry_points]
+
+# console_scripts =
+#     hclean =  history_clean:history_clean
+
+#--------------------------------------------------------
+
+# [build-system]
+# requires = [
+#     "setuptools>=72.1.0",
+#      # "wheel >= 0.44",
+
+
+# ]
+# build-backend = "setuptools.build_meta"
+
+# [project]
+# name = "history_clean"
+# version = "1.0"
+
+# [tool.setuptools]
+# py_modules = ["src.mod1"]
+# install_requires = [
+#     "toml >= 0.10.2",
+# ]
+
+# [tool.setuptools.entry_points]
+# console_scripts = [
+#     "hclean = history_clean:history_clean"
+# ]
+
+
+# Can also do simply:
+# [build-system]
+# requires = ["setuptools", "wheel"]
+# build-backend = "setuptools.build_meta"
+
+#-------------------------------------------------
+
+[build-system]
+requires = [
+    "setuptools",
+    # "wheel >= 0.44",  # Seems to work without this
+]
+build-backend = "setuptools.build_meta"
+
+
+[project.urls]
+# Homepage = "https://your.project"
+# Documentation = "https://docs.your.project"
+# Repository = "http://github.com/you/your.project"
+
+[project]
+name = "history_clean"
+# authors = [
+#     {name = "Josiah Carberry", email = "josiah_carberry@brown.edu"},
+#     {name = "Your Co-Author", email = "their@email.address"},
+# ]
+# maintainers = [
+#     {name = "Your Name", email = "your@email.address"}
+# ]
+
+# description = "My package description"
+# readme = "README.rst"
+# license = {file = "LICENSE"}
+# license = {text = "BSD-3-Clause"}
+
+requires-python = ">=3.8"
+
+# keywords = ["one", "two"]
+# classifiers = [
+#     "Framework :: Django",
+#     "Programming Language :: Python :: 3",
+#     "Development Status :: 4 - Beta",
+#     "Intended Audience :: Developers",
+#     "License :: OSI Approved :: MIT License",
+# ]
+
+# This is not required?!
+# dependencies = [
+#     "tomli",
+# ]
+
+# Any dependencies that are not strictly required, or only used in certain situations, can be added as optional requirements:
+# [project.optional-dependencies]
+# dev = ["pytest>=7.4.3", "ruff==0.1.8"]
+# Installing the package like pip install "example[dev]" (or pip install -e ".[dev]" when doing an editable install) will trigger pip to also install the optional dependencies.
+
+# For dynamic versioning, also have to do:
+# requires = ["setuptools-scm"]
+# I think this takes the version number from your git tags;
+# dynamic = ["version"]
+
+version = "0.3"
+
+# [project.optional-dependencies]
+# pdf = ["ReportLab>=1.2", "RXP"]
+# rest = ["docutils>=0.3", "pack ==1.1, ==1.3"]
+
+# [tool.setuptools.package-data]
+# example = ["*.txt"]
+# example = ["config.toml"]
+# This instructs setuptools to include all files with the .txt extension in your example package. You can then access them using importlib.resources.
+# Not sure how this is used;
+
+[project.scripts]
+# hclean = "history_clean:start"
+hclean = "history_clean:run"
+

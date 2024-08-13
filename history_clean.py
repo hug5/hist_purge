@@ -1,14 +1,10 @@
-import re
-import shutil
-import os
-import time
-import toml
-
+import re, shutil, os, time, toml
+import sys
 
 #---------------------------------------------------
 
-#// 2024-08-06 Tue 03:57
-
+# // 2024-08-06 Tue 03:57
+# // 2024-08-08 Thu 23:14
 #---------------------------------------------------
 
 
@@ -19,16 +15,20 @@ class history_clean():
         self.filename = ""
             # history path/file; from config;
         # self.bhistory = ''
-        self.filename_os = ''
+        # self.filename_os = ''
             # history path, fully expanded
+
+        self.filename_write = ''
+            # by default, is self.filename;
+            # but for testing, can be different name;
 
         self.sort_history = True
             # sort or not sort history
-        self.bfile1 = []
-            # Original history, but unduplicated
         self.bfile2 = {}
-            # Filtered history list
+            # Original history; then made into set;
         self.bfile3 = []
+            # Filtered history list
+            # Then optionally sorted;
 
         self.file_out = ''
             # final String file to save to disk
@@ -47,38 +47,40 @@ class history_clean():
             }
         }
 
-        # self.regex_include = []
-        # self.regex_exclude = []
-        # self.containing_include = []
-        # self.containing_exclude = []
-        # self.exact_include = []
-        # self.exact_exclude = []
-
         self.start()
 
         pass
 
 
     def print_error_traceback(self, e, msg=None):
-        if msg: print(msg)
-        print(e.args)
-        print(e.with_traceback)
+        if msg: print(msg);
+
+        # if e.args: print(e.args)
+        # # print(e.args[1])
+        # print(e.with_traceback)
+        # raise
+        # raise SystemExit
+
+
+        print(type(e))    # the exception type
+        print(e.args)     # arguments stored in .args
+        print(e)          # __str__ allows args to be printed directly,
+        raise SystemExit
+
+        # exit()
+        # sys.exit() # requires sys module
 
 
     def write_file(self):
         try:
-            # f = open(bhistory, "w")
-            # f.write(file_out)
-            # with open(self.filename_os, "w") as f:
-            # with open("history2.txt", "w") as f:
-            with open(self.filename_os, "w") as f:
-                f.write(self.file_out)
 
-            # print("done")
-            # print(self.file_out)
+            # with open(self.filename_os, "w") as f:
+            with open(self.filename_write, "w") as f:
+                f.write(self.file_out)
 
         except Exception as e:
             self.print_error_traceback(e, "Error Write File")
+
 
         else:
             pass
@@ -95,7 +97,7 @@ class history_clean():
             t = time.time()
             dt_string = time.strftime("%y%m%d%H%M%S", time.localtime(t))
 
-            src = self.filename_os
+            src = self.filename
 #
             dst = src + "-" + dt_string
             shutil.copyfile(src, dst)
@@ -114,7 +116,6 @@ class history_clean():
 
         if self.sort_history == True:
             self.bfile3 = sorted(self.bfile3)
-            # this will change bfile1 from set to list
 
         # file_out = ''
         # for line in self.bfile3:
@@ -130,30 +131,7 @@ class history_clean():
         # self.file_out = file_out
 
 
-    # Add line to set variable
-    # def add_line(self, bline):
-    #     # self.bfile1.add(bline)    # set
-    #     # self.bfile1.append(bline)   # list
-    #     # lll.append(bline)   # list
-    #     # bset.append(bline)
-    #     # add is a set method; not list method;
-    #     # So this should guarantee creation of set;
-    #     pass
-
     def exclude_line(self, bline):
-        # for pattern in self.rules_exclude:
-            # if re.search(r".*###$", bline) : return True
-            # if re.search(r_include, bline) : return True
-            # if re.search(pattern, bline):
-        #     if re.search(pattern, bline):
-        #         print(pattern)
-        #         print(bline)
-        #         print("exclude rule")
-        #         # quit()
-        #         return True
-
-        # return False
-
 
         for pattern in self.filter_rules['exclude']["exact"]:
             if pattern == bline:
@@ -178,65 +156,20 @@ class history_clean():
         return False
 
 
-
-        ###
-            # if bline == '': return True
-            # elif bline == '!': return True
-            # elif bline == '"': return True
-            # # res = re.search(r"^#", bline)
-            # elif ( re.search(r"^#", bline) ) : return True
-            # elif ( re.search(r"^z ", bline) ) : return True
-            # elif ( re.search(r"^man ", bline) ) : return True
-            # elif ( re.search(r"^cd ", bline) ) : return True
-            # elif ( re.search(r"^c ", bline) ) : return True
-            # elif ( re.search(r"^hs ", bline) ) : return True
-            # elif ( re.search(r"^~", bline) ) : return True
-            # elif ( re.search(r"^vi ", bline) ) : return True
-            # elif ( re.search(r"^vim ", bline) ) : return True
-            # elif ( re.search(r"^\$", bline) ) : return True
-            # elif ( re.search(r"^,", bline) ) : return True
-            # elif ( re.search(r"^sudo apt search", bline) ) : return True
-            # elif ( re.search(r"^sudo apt info", bline) ) : return True
-            # elif ( re.search(r"^sudo apt update", bline) ) : return True
-            # elif ( re.search(r"^vidir ", bline) ) : return True
-            # elif ( re.search(r"^tree ", bline) ) : return True
-            # elif ( re.search(r"^rm ", bline) ) : return True
-            # elif ( re.search(r"^l ", bline) ) : return True
-            # elif ( re.search(r"^ll ", bline) ) : return True
-            # elif ( re.search(r"^yt-dlp", bline) ) : return True
-            # elif ( re.search(r"^target ", bline) ) : return True
-            # elif ( re.search(r"^source ", bline) ) : return True
-            # elif ( re.search(r"^\.", bline) ) : return True
-            # elif ( re.search(r"^\./", bline) ) : return True
-            # elif ( re.search(r"^\?", bline) ) : return True
-            # elif ( re.search(r"^:", bline) ) : return True
-            # elif ( re.search(r"^.{1}$", bline) ) : return True
-            # return False
-
-
     def include_line(self, bline) :
-
-        # for pattern in self.rules_include:
-        # for pattern in self.regex_include:
-        #     # if re.search(r".*###$", bline) : return True
-        #     # if re.search(pattern, bline) : return True
-        #     # if re.search(pattern, bline):
-        #     if re.search(pattern, bline):
-        #         # return True
-        #         print("include" + bline)
-        #         return True
-        # return False
 
         for pattern in self.filter_rules['include']["exact"]:
             if pattern == bline:
                 # print(pattern + " : " + bline)
                 # print("◌", end ="")
+                # sys.stdout.flush()
                 return True
 
         for pattern in self.filter_rules['include']["containing"]:
             if bline.find(pattern) >= 0:
                 # print(pattern + " : " + bline)
                 # print("◍", end ="")
+                # sys.stdout.flush()
                 return True
 
         for pattern in self.filter_rules['include']["regex"]:
@@ -244,23 +177,31 @@ class history_clean():
                 # return True
                 # print(pattern + " : " + bline)
                 # print("o", end ="")
+                # sys.stdout.flush()
                 return True
 
         # print("false")
+        # print(".", end ="")
+        # sys.stdout.flush()
         return False
 
 
     # Read file line by line
     def read_lines(self):
 
-        # bfile3 = []
-
+        ascii_sym = "∘ "
         c = 0
         for line in self.bfile2:
+
+            c += 1
+            if c % 3000 == 0:
+                print(ascii_sym, end ="")
+                sys.stdout.flush()
 
             # print(".", end ="")
             bline = line.strip()
             # print(bline)
+
 
             # Check for specific includes;
             if self.include_line(bline) == True:
@@ -285,89 +226,208 @@ class history_clean():
             # print(".", end ="")
             self.bfile3 += [bline]
 
+        print(ascii_sym)
 
         # print(".")
         # self.bfile3 = bfile3
 
+    def make_set(self):
+        """
+        Remove duplicates, but preserve order of new list
+        Just doing set([index]) does not preserve order;
+        Could just do this to make into set:
+          self.bfile2 = set(self.bfile2)
+        """
+
+        try:
+            # a = [1, 2, 20, 6, 210]
+            # b = set([6, 20, 1])
+            # c = [x for x in a if x not in b]
+            # [2, 210]
+
+            # a = self.bfile2
+            b = set(self.bfile2)
+            # a = [1, 2, 3, 4, 2, 3, 4, 4, 5, 6]
+            # b = set([5, 3, 2, 4, 1, 6])
+
+
+            if not self.sort_history:
+
+                # x3 = [0]
+                # self.swatch(x3, "start")
+
+                c = []
+
+                # for x in a:
+                for xline in self.bfile2:
+                    if xline in b:
+                        b.remove(xline)
+                        c.append(xline)
+
+                self.bfile2 = c
+
+                # self.swatch(x3, "stop")
+                # raise SystemExit
+
+            else:
+                self.bfile2 = b
+
+
+        except Exception as e:
+            self.print_error_traceback(e, "Make Set Error")
+
+            # raise SystemExit
+
+
 
     def open_file(self):
-        # open file
-        # self.global bfile, bhistory
-        # global bfile
-        self.filename_os= os.path.expanduser(self.filename)
-        # bfile = open(bhistory, 'r')
-        with open(self.filename_os, 'r') as ofile:
-            self.bfile1 = ofile.readlines()
 
-        # make list into set
-        self.bfile2 = set(self.bfile1)
+        try:
+            # filename_os = os.path.expanduser(self.filename)
+            # bfile = open(bhistory, 'r')
+            with open(self.filename, 'r') as ofile:
+                self.bfile2 = ofile.readlines()
+
+
+            # make list into set
+            # self.bfile2 = set(self.bfile2)
+
+        except Exception as e:
+            self.print_error_traceback(e, "Open File Error")
+            # handleException(e)
+            # raise
 
 
 
     def load_conf(self):
+        # os.path.isfile(path)
+        # except FileNotFoundError:
+        # Exception types:
+        # https://www.w3schools.com/python/python_ref_exceptions.asp
+        # https://docs.python.org/3/reference/simple_stmts.html#raise
+        # https://docs.python.org/3/tutorial/errors.html#user-defined-exceptions
+
 
         try:
             with open('config.toml', 'r') as ftoml:
                 config = toml.load(ftoml)
+              # If bad, should give FileNotFoundError
 
+            self.filename = config['history_source_file']
+            if self.filename == '': raise NameError("No history_source_file")
 
-            self.filename = config['settings']['history_file']
-            self.sort_history = config['settings']['sort_lines']
+            # rename filename to the os.path name;
+            self.filename = os.path.expanduser(self.filename)
+            # config['history_source_file'] = filename_os
 
-            # self.filter_rules["include"]["exact"] = config['filter_rules']['exact_include']
-            self.filter_rules["include"]["exact"] = config['filter_rules']['exact_include']
-            self.filter_rules["exclude"]["exact"] = config['filter_rules']['exact_exclude']
+            # Check for existence of history_write_file key; check if there is a value; if blank or doesn't exist, then default to self.filename;
+            if not "history_write_file" in config or config['history_write_file'] == "":
+                self.filename_write = self.filename
 
-            self.filter_rules["include"]["containing"] = config['filter_rules']['containing_include']
-            self.filter_rules["exclude"]["containing"] = config['filter_rules']['containing_exclude']
-
-            self.filter_rules["include"]["regex"] = config['filter_rules']['regex_include']
-            self.filter_rules["exclude"]["regex"] = config['filter_rules']['regex_exclude']
-
-            # print(self.filter_rules)
-            # quit()
-            # self.filter_rules["exclude"]["exact"] = config['filter_rules']['exact_exclude']
-            # self.filter_rules["include"]["regex"] = config['filter_rules']['regex_include']
-            # self.filter_rules["exclude"]["regex"] = config['filter_rules']['regex_exclude']
-            # self.filter_rules["include"]["containing"] = config['filter_rules']['containing_include']
-            # self.filter_rules["exclude"]["containing"] = config['filter_rules']['containing_exclude']
-
-            # self.rules_exact_exclude = config['filter_rules']['exact_exclude']
-            # self.rules_exact_include = config['filter_rules']['exact_include']
-            # self.rules_regex_exclude = config['filter_rules']['regex_exclude']
-            # self.rules_regex_include = config['filter_rules']['regex_include']
-            # self.rules_containing_exclude = config['filter_rules']['containing_exclude']
-            # self.rules_containing_include = config['filter_rules']['containing_include']
+            # If it does exist, then get the os.path
+            else:
+                self.filename_write = config['history_write_file']
+                self.filename_write = os.path.expanduser(self.filename_write)
 
 
 
+            # Checking for no key, but not the value of the key; if not false/true, then will error
+            if not "sort_lines" in config: config['sort_lines'] = True
+
+            # Anything bad below should raise ValueError or KeyError:
+            self.sort_history = config['sort_lines']
+
+
+            exact_include = []
+            exact_exclude = []
+            containing_include = []
+            containing_exclude = []
+            regex_include = []
+            regex_exclude = []
+
+            # Filter rules should be option; if not set or keys not set, then set to blank;'
+            if "filter_rules" in config:
+                if "exact_include" in config['filter_rules']:
+                    exact_include = config['filter_rules']['exact_include']
+                if "exact_exclude" in config['filter_rules']:
+                    exact_exclude = config['filter_rules']['exact_exclude']
+
+                if "containing_include" in config['filter_rules']:
+                    containing_include = config['filter_rules']['containing_include']
+                if "containing_exclude" in config['filter_rules']:
+                    containing_exclude = config['filter_rules']['containing_exclude']
+
+                if "regex_include" in config['filter_rules']:
+                    regex_include = config['filter_rules']['regex_include']
+                if "regex_exclude" in config['filter_rules']:
+                    regex_exclude = config['filter_rules']['regex_exclude']
+
+
+            self.filter_rules["include"]["exact"] = exact_include
+            self.filter_rules["exclude"]["exact"] = exact_exclude
+
+            self.filter_rules["include"]["containing"] = containing_include
+            self.filter_rules["exclude"]["containing"] = containing_exclude
+
+            self.filter_rules["include"]["regex"] = regex_include
+            self.filter_rules["exclude"]["regex"] = regex_exclude
+
+            # print( toml.dumps(self.filter_rules) )
+            # raise SystemExit
+
+        except FileNotFoundError as e:
+            self.print_error_traceback(e, "No config.toml file")
+        except NameError as e:
+            self.print_error_traceback(e)
+        except ValueError as e:
+            self.print_error_traceback(e, "Bad config key value")
+        except KeyError as e:
+            self.print_error_traceback(e, "Missing config key")
         except Exception as e:
-            self.print_error_traceback(e, "Config Load Error")
+            self.print_error_traceback(e, "Config load error")
+            # Hopefully this catches anything else;
+
+        # raise SystemExit
+
+
+    # def swatch(self, x, t='start'):
+    def swatch(self, x = 'start'):
+        """ To start, do: x = self.swatch()
+        To stop, pass back the variable: self.swatch(x) """
+
+        if x == "start":
+            return time.time()
+        else:
+            stop = time.time()
+            print(str(stop - x)[:5] + " seconds." )
 
 
     def start(self):
 
-        start = time.time()
+        x = self.swatch()
+        # raise SystemExit
 
         self.load_conf()
         self.open_file()
+        self.make_set()
         self.read_lines()
         self.sort_lines()
         self.backup_old_history()
         self.write_file()
 
         print("Done.")
-        print( (str(time.time() - start))[:5] + " seconds." )
-        # print(file_out)
+
+        self.swatch(x)
 
 
+# def main():
+#     history_clean()
+    # pass
 
-if __name__ == '__main__':
-    history_clean()
 
+# if __name__ == '__main__':
+#     history_clean()
 
-#---------------------------------------------------
-# Display elapsed time:
 
 
 
@@ -469,3 +529,21 @@ if __name__ == '__main__':
     # print(local)
     # print(local2)
     # print(gm)
+
+
+
+
+    # print(config)
+    # pprint.pprint(config)  # requires import pprint
+    # print(json.dumps(config, indent=2, sort_keys=True))
+    # print(json.dumps(config, indent=2))  # requires import json
+
+    # print(toml.dumps(config))  # Native to toml
+    # print(config['title'])
+
+    # if "exact_exclude" in config:
+    #     print("yes")
+    # else:
+    #     print("no")
+
+    # raise SystemExit

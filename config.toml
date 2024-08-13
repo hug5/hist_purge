@@ -1,94 +1,94 @@
-[settings]
 
-history_file = "history2.txt"
+# history_file = ""
+# history_file = "history.txt"
+history_source_file = "history.txt"
+# history_file = "bash_history"
 
 #history_file = "~/.bash_history"
 #history_file = "history.txt"
-#history_file = ".bash_history"
-#history_file = "bash_history"
 
+history_write_file = "history2.txt"
 
-# Sort history lines: true or false; must be lowercase;
-sort_lines = true
+# Sort history lines: true or false; lowercase only; true is default;
+sort_lines = false
 
 
 
 [filter_rules]
 
-# Exact match
-exact_include = [
+  # Exact match
+  exact_include = [
+  ]
 
-]
-
-exact_exclude = [
-  "",
-  "!",
-  ".",
-  "cp",
-  "c",
-  "clear"
-]
-
-
-# substring match; this matches anywhere;
-containing_include = [
-  #"###",
-]
-containing_exclude = [
-
-]
+  exact_exclude = [
+    "",
+    "!",
+    ".",
+    "cp",
+    "c",
+    "clear"
+  ]
 
 
-# Regex expression; regex characters should be double escaped, \\, if want to use as literal
-regex_include = [
-  ".*###$"  # specifically target ending with ###
-]
+  # substring match; this matches anywhere;
+  containing_include = [
+    #"###",
+  ]
+  containing_exclude = [
 
-regex_exclude = [
-  "^touch ",
-  "^hs ",
-  "^trash",
-  "^locate ",
-  "^whereis ",
-  "^which ",
-  "^whois ",
-  "^df ",
-  "^ffmpeg ",
-  "^npm ",
-  "^git",
-  "^duplicity",
-  "^yt-dlp",
-  "^g ",
-  # "^find ",
-  "^sudo apt search",
-  "^sudo apt info",
-  "^sudo apt update",
-  "^z ",
-  "^.{1}$",    # Any single character
-  "^\\.",
-  "^#",
-  "^!",
-  "^man ",
-  "^cd ",
-  "^c ",
-  "^hs ",
-  "^~",
-  "^vi ",
-  "^vim ",
-  "^$",
-  "^,",
-  "^vidir ",
-  "^tree ",
-  "^rm ",
-  "^l ",
-  "^ll ",
-  "^yt-dlp",
-  "^target=",
-  "^target.",
-  "^source.",
-  "^source=",
-  "^./",
-  "^\\?",
-  "^:",
-  # "^[ \\t\\r\\n]*$",   # regex way to remove blank
-]
+  ]
+
+
+  # Regex expression; regex characters should be double escaped, \\, if want to use as literal
+  regex_include = [
+    ".*###$"  # specifically target ending with ###
+  ]
+
+  regex_exclude = [
+    "^touch ",
+    "^hs ",
+    "^trash",
+    "^locate ",
+    "^whereis ",
+    "^which ",
+    "^whois ",
+    "^df ",
+    "^ffmpeg ",
+    "^npm ",
+    "^git",
+    "^duplicity",
+    "^yt-dlp",
+    "^g ",
+    # "^find ",
+    "^sudo apt search",
+    "^sudo apt info",
+    "^sudo apt update",
+    "^z ",
+    "^.{1}$",    # Any single character
+    "^\\.",
+    "^#",
+    "^!",
+    "^man ",
+    "^cd ",
+    "^c ",
+    "^hs ",
+    "^~",
+    "^vi ",
+    "^vim ",
+    "^$",
+    "^,",
+    "^vidir ",
+    "^tree ",
+    "^rm ",
+    "^l ",
+    "^ll ",
+    "^yt-dlp",
+    "^target=",
+    "^target.",
+    "^source.",
+    "^source=",
+    "^./",
+    "^\\?",
+    "^:",
+    # "^[ \\t\\r\\n]*$",   # regex way to remove blank
+  ]
