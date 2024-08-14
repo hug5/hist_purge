@@ -12,7 +12,7 @@ history_write_file = "history2.txt"
 
 
 # Sort history lines: true or false; lowercase only; true is default;
-sort_lines = false
+sort_lines = true
 
 
 
@@ -61,6 +61,8 @@ sort_lines = false
     "^duplicity",
     "^yt-dlp",
     "^g ",
+    "^;",
+    "^jvv ",
     # "^find ",
     "^sudo apt search",
     "^sudo apt info",
