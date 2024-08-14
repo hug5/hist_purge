@@ -126,5 +126,5 @@ version = "0.3"
 
 [project.scripts]
 # hclean = "history_clean:start"
-hclean = "history_clean:run"
+hpurge = "hist_purge:run"
 
