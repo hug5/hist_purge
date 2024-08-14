@@ -2,13 +2,13 @@
 # history_source_file = ""
 # history_source_file = "history.txt"
 # history_source_file = "history.txt"
-history_source_file = "bash_history"
+#history_source_file = "bash_history"
 
-#history_source_file = "~/.bash_history"
+history_source_file = "~/.bash_history"
 #history_source_file = "history.txt"
 
 # comment out when not testing;
-history_write_file = "history2.txt"
+#history_write_file = "history2.txt"
 
 
 # Sort history lines: true or false; lowercase only; true is default;
@@ -64,9 +64,7 @@ sort_lines = true
     "^;",
     "^jvv ",
     # "^find ",
-    "^sudo apt search",
-    "^sudo apt info",
-    "^sudo apt update",
+    "^sudo apt ",
     "^z ",
     "^.{1}$",    # Any single character
     "^\\.",
@@ -75,6 +73,10 @@ sort_lines = true
     "^man ",
     "^cd ",
     "^c ",
+    "^cp ",
+    "^mv ",
+    "^sudo mv ",
+    "^sudo cp ",
     "^hs ",
     "^~",
     "^vi ",
