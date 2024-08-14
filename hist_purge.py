@@ -4,13 +4,13 @@ import sys
 from pathlib import Path
 
 #---------------------------------------------------
-
 # // 2024-08-06 Tue 03:57
 # // 2024-08-08 Thu 23:14
+# https://github.com/hug5/hist_purge
 #---------------------------------------------------
 
 
-class history_clean():
+class hist_purge():
 
     def __init__(self):
 
@@ -57,10 +57,11 @@ class history_clean():
     def print_error_traceback(self, e, msg=None):
 
         if msg: print("Error: " + msg)
-        print(e)          # __str__ allows args to be printed directly,
-        print("Type: " + str(type(e)))    # the exception type
+        print(e)
+        # __str__ allows args to be printed directly,
+        print("Type: " + str(type(e)))
+          # the exception type
 
-        # Exit
         raise SystemExit
 
         # if e.args: print(e.args)
@@ -76,6 +77,8 @@ class history_clean():
 
     def write_file(self):
         try:
+
+            self.std_out("Save file.")
 
             # with open(self.filename_os, "w") as f:
             with open(self.filename_write, "w") as f:
@@ -96,6 +99,8 @@ class history_clean():
         try:
             # current_time = datetime.now()
             # dt_string = current_time.strftime("%Y.%m.%d.%H%M%S")
+
+            self.std_out("Backup file.")
 
             t = time.time()
             dt_string = time.strftime("%y%m%d%H%M%S", time.localtime(t))
@@ -191,18 +196,29 @@ class history_clean():
         # sys.stdout.flush()
         return False
 
+    def std_out(self, msg, cr = True):
+        # if cr == True: eol = "\n" else: eol = ""
+        eol = "\n" if cr == True else ""
+            # Python's fake ternary operator
+
+        print(msg, end = eol)
+        sys.stdout.flush()
+
 
     # Read file line by line
     def read_lines(self):
+
+        self.std_out("Begin purge: ", False)
 
         ascii_sym = "∘ "
         c = 0
         for line in self.bfile2:
 
             c += 1
-            if c % 3000 == 0:
-                print(ascii_sym, end ="")
-                sys.stdout.flush()
+            if c % 2500 == 0:
+                self.std_out(ascii_sym, False)
+                # print(ascii_sym, end ="")
+                # sys.stdout.flush()
 
             # print(".", end ="")
             bline = line.strip()
@@ -234,8 +250,7 @@ class history_clean():
 
         print(ascii_sym)
 
-        # print(".")
-        # self.bfile3 = bfile3
+
 
     def make_set(self):
         """
@@ -246,34 +261,18 @@ class history_clean():
         """
 
         try:
-            # a = [1, 2, 20, 6, 210]
-            # b = set([6, 20, 1])
-            # c = [x for x in a if x not in b]
-            # [2, 210]
-
-            # a = self.bfile2
             b = set(self.bfile2)
-            # a = [1, 2, 3, 4, 2, 3, 4, 4, 5, 6]
-            # b = set([5, 3, 2, 4, 1, 6])
-
 
             if not self.sort_history:
 
-                # x3 = [0]
-                # self.swatch(x3, "start")
-
                 c = []
 
-                # for x in a:
                 for xline in self.bfile2:
                     if xline in b:
                         b.remove(xline)
                         c.append(xline)
 
                 self.bfile2 = c
-
-                # self.swatch(x3, "stop")
-                # raise SystemExit
 
             else:
                 self.bfile2 = b
@@ -282,26 +281,17 @@ class history_clean():
         except Exception as e:
             self.print_error_traceback(e, "Make Set Error")
 
-            # raise SystemExit
-
-
 
     def open_history_file(self):
 
+        self.std_out("Open history file.")
+
         try:
-            # filename_os = os.path.expanduser(self.filename)
-            # bfile = open(bhistory, 'r')
             with open(self.filename, 'r') as ofile:
                 self.bfile2 = ofile.readlines()
 
-            # make list into set
-            # self.bfile2 = set(self.bfile2)
-
         except Exception as e:
             self.print_error_traceback(e, "Open File Error")
-            # handleException(e)
-            # raise
-
 
 
     def load_conf(self):
@@ -311,6 +301,8 @@ class history_clean():
         # https://www.w3schools.com/python/python_ref_exceptions.asp
         # https://docs.python.org/3/reference/simple_stmts.html#raise
         # https://docs.python.org/3/tutorial/errors.html#user-defined-exceptions
+
+        self.std_out("Load config.")
 
         # Get user's home directory:
         # user_home = os.path.expanduser("~/")
@@ -475,132 +467,13 @@ class history_clean():
 
 
 def run():
-    mug = history_clean()
+    mug = hist_purge()
 
     # pass
 
 
 if __name__ == '__main__':
-    mug = history_clean()
+    mug = hist_purge()
     # mug.start()
-    # history_clean()
-
-
-
-
-#---------------------------------------------------
-### Notes
-#---------------------------------------------------
-
-
-    # yr = current_time.year
-    # mo = current_time.month
-    # d = current_time.day
-    # h = current_time.hour
-    # m = current_time.minute
-    # s = current_time.second
-
-    # dd/mm/YY H:M:S
-    # dt_string = current_time.strftime("%d/%m/%Y %H:%M:%S")
-    # dt_string = current_time.strftime("%Y.%m.%d.%H%M%S")
-
-    # print(res)
-    # if res:
-        # print(res.string)
-        # break
-    # if res: continue
-
-    # bset.add(bline)
-
-
-    # -------------------
-
-    # readline() : reads single line
-    # readlines() : read everything into a list object or set; carriage returns are converted to \n; reads a single line of the file
-    # read() : reads everything as a single string;
-
-    # -------------------
-
-
-    # with open(bhistory, 'r') as bfile:
-    #     for line in bfile:
-    #     print('Total lines:', num_lines) # 8
-
-    # # bfile.close()
-    #   with open('notes-pycrash.txt') as file_object:
-    #       contents = file_object.read()
-    #   print(contents)
-    #   # No need to close with this syntax
-    #  # Can do readline(), readlines() and read()
-    #   # readline seemsto read just 1 line;
-    #   # readlines reads everything, but carriage returns are converted to \n
-    #   # read() reads everything;
-
-    #     filename = 'programming.txt'
-    #   with open(filename, 'w') as fo:
-    #       fo.write("Ixx love programming.\n")
-    #       fo.write("Do you love programming?\n")
-    #       # And can add more lines like so above;
-
-    # myfile = open("demo.txt", "r")
-    # myline = myfile.readline()
-    # while myline:
-    #     print(myline)
-    #     myline = myfile.readline()
-    # myfile.close()
-
-
-    # with open(bhistory, 'r') as ofile:
-    #     # When use the 'with' syntax, don't have to close file;
-    #     # bset_temp = set(ofile.readline())
-    #     # print(ofile.readline())
-    #     # bfile = ofile.readline() # read one line
-    #     # bfile = ofile.read() # read all
-
-    #     bfile = ofile.readlines()
-    #     # for myline in mylines
-    #     #     bfile += myline + "\n"
-    #     #     myline = ofile.readline()
-
-    #     # for line in ofile:
-    #     #     bset += line.readline
-
-
-    # import time
-
-    # from datetime import datetime as dt
-    # print( time.time() )
-    # print ( dt.timestamp(dt.now()) )
-
-    # t = time.time()
-
-    # local = time.strftime('%y-%m-%d %H:%M %Z', time.localtime(t))
-    # local2 = time.strftime('%y-%m-%d %H:%M:%S %Z')
-    # #'2019-05-27 12:03 CEST'
-
-    # gm = time.strftime('%Y-%m-%d %H:%M %Z', time.gmtime(t))
-    # #'2019-05-27 10:03 GMT'
-
-    # print(local)
-    # print(local2)
-    # print(gm)
-
-
-
-
-    # print(config)
-    # pprint.pprint(config)  # requires import pprint
-    # print(json.dumps(config, indent=2, sort_keys=True))
-    # print(json.dumps(config, indent=2))  # requires import json
-
-    # print(toml.dumps(config))  # Native to toml
-    # print(config['title'])
-
-    # if "exact_exclude" in config:
-    #     print("yes")
-    # else:
-    #     print("no")
-
-    # raise SystemExit
-
+    # hist_purge()
 

@@ -4,11 +4,11 @@
 # history_source_file = "history.txt"
 #history_source_file = "bash_history"
 
-history_source_file = "~/.bash_history"
-#history_source_file = "history.txt"
+# history_source_file = "~/.bash_history"
+history_source_file = "history2.txt"
 
 # comment out when not testing;
-#history_write_file = "history2.txt"
+history_write_file = "history2.txt"
 
 
 # Sort history lines: true or false; lowercase only; true is default;
@@ -28,7 +28,14 @@ sort_lines = true
     ".",
     "cp",
     "c",
-    "clear"
+    "clear",
+    "ll",
+    "l",
+    "ll..",
+    "lld",
+    "llD",
+    "lll",
+    "lls"
   ]
 
 
@@ -47,6 +54,7 @@ sort_lines = true
   ]
 
   regex_exclude = [
+    "^.{1}$",    # Any single character
     "^touch ",
     "^hs ",
     "^trash",
@@ -62,11 +70,15 @@ sort_lines = true
     "^yt-dlp",
     "^g ",
     "^;",
+    "^jv ",
     "^jvv ",
+    "^jvvv ",
     # "^find ",
     "^sudo apt ",
+    "^snap ",
+    "^su ",
+    "^subl ",
     "^z ",
-    "^.{1}$",    # Any single character
     "^\\.",
     "^#",
     "^!",
@@ -74,13 +86,16 @@ sort_lines = true
     "^cd ",
     "^c ",
     "^cp ",
+    "^sudo cp ",
     "^mv ",
     "^sudo mv ",
-    "^sudo cp ",
+    "^mkdir ",
+    "^sudo mkdir ",
     "^hs ",
     "^~",
     "^vi ",
     "^vim ",
+    "^mkdir ",
     "^$",
     "^,",
     "^vidir ",
@@ -88,6 +103,9 @@ sort_lines = true
     "^rm ",
     "^l ",
     "^ll ",
+    "^la ",
+    "^ln ",
+    "^ls ",
     "^yt-dlp",
     "^target=",
     "^target.",

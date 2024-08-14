@@ -71,7 +71,8 @@ build-backend = "hatchling.build"
 [project.urls]
 # Homepage = "https://your.project"
 # Documentation = "https://docs.your.project"
-# Repository = "http://github.com/you/your.project"
+Repository = "https://github.com/hug5/hist_purge"
+
 
 [project]
 name = "hist_purge"
