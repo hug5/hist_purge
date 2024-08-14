@@ -1,13 +1,15 @@
 
-# history_file = ""
-# history_file = "history.txt"
-history_source_file = "history.txt"
-# history_file = "bash_history"
+# history_source_file = ""
+# history_source_file = "history.txt"
+# history_source_file = "history.txt"
+history_source_file = "bash_history"
 
-#history_file = "~/.bash_history"
-#history_file = "history.txt"
+#history_source_file = "~/.bash_history"
+#history_source_file = "history.txt"
 
+# comment out when not testing;
 history_write_file = "history2.txt"
+
 
 # Sort history lines: true or false; lowercase only; true is default;
 sort_lines = false

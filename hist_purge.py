@@ -1,5 +1,7 @@
-import re, shutil, os, time, tomli
+import re, shutil, time, tomli
+# import os
 import sys
+from pathlib import Path
 
 #---------------------------------------------------
 
@@ -98,10 +100,13 @@ class history_clean():
             t = time.time()
             dt_string = time.strftime("%y%m%d%H%M%S", time.localtime(t))
 
-            src = self.filename
-#
-            dst = src + "-" + dt_string
+            src = str(self.filename)
+
+            # Have to make into string; gets error because using Pathlib; and that's not a string;
+            dst = str(src) + "-" + dt_string
             shutil.copyfile(src, dst)
+
+
         # except:
         except Exception as e:
             self.print_error_traceback(e, "Backup Error")
@@ -308,7 +313,8 @@ class history_clean():
         # https://docs.python.org/3/tutorial/errors.html#user-defined-exceptions
 
         # Get user's home directory:
-        user_home = os.path.expanduser("~/")
+        # user_home = os.path.expanduser("~/")
+        user_home = Path.home()
         config_file1 = "hist_purge.toml"
         config_file2 = ".hist_purge.toml"
         config_path = ''  # the found path location of config.toml
@@ -318,14 +324,26 @@ class history_clean():
         # Current folder has precedence; then home; hidden has precedence over normal;
 
         try:
-            if os.path.isfile(config_file2):
+            ###
+                # if os.path.isfile(config_file2):
+                #     config_path = config_file2
+                # elif os.path.isfile(config_file1):
+                #     config_path = config_file1
+                # elif os.path.isfile(user_home + config_file2):
+                #     config_path = user_home + config_file2
+                # elif os.path.isfile(user_home + config_file1):
+                #     config_path = user_home + config_file1
+                # else:
+                #     raise FileNotFoundError("Could not find " + config_file1 + " conf file")
+
+            if Path(config_file2).is_file():
                 config_path = config_file2
-            elif os.path.isfile(config_file1):
+            elif Path(config_file1).is_file():
                 config_path = config_file1
-            elif os.path.isfile(user_home + config_file2):
-                config_path = user_home + config_file2
-            elif os.path.isfile(user_home + config_file1):
-                config_path = user_home + config_file1
+            elif Path(user_home / config_file2).is_file():
+                config_path = Path(user_home / config_file2)
+            elif Path(user_home / config_file1).is_file():
+                config_path = Path(user_home / config_file1)
             else:
                 raise FileNotFoundError("Could not find " + config_file1 + " conf file")
 
@@ -348,7 +366,8 @@ class history_clean():
             if self.filename == '': raise NameError("No history_source_file")
 
             # rename filename to the os.path name;
-            self.filename = os.path.expanduser(self.filename)
+            # self.filename = os.path.expanduser(self.filename)
+            self.filename = Path(self.filename).expanduser()
             # config['history_source_file'] = filename_os
 
             # Check for existence of history_write_file key; check if there is a value; if blank or doesn't exist, then default to self.filename;
@@ -358,7 +377,8 @@ class history_clean():
             # If it does exist, then get the os.path
             else:
                 self.filename_write = config['history_write_file']
-                self.filename_write = os.path.expanduser(self.filename_write)
+                # self.filename_write = os.path.expanduser(self.filename_write)
+                self.filename_write = Path(self.filename_write).expanduser()
 
 
 
@@ -449,26 +469,21 @@ class history_clean():
         self.backup_old_history()
         self.write_file()
 
-        print("Done.")
+        print("Done. ", end="")
 
         self.swatch(x)
 
 
 def run():
-    jug = history_clean()
+    mug = history_clean()
 
     # pass
 
 
 if __name__ == '__main__':
-    jug = history_clean()
-    # jug.start()
+    mug = history_clean()
+    # mug.start()
     # history_clean()
-
-# mug
-# jug
-# clug
-
 
 
 
