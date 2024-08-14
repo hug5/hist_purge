@@ -76,18 +76,20 @@ Repository = "https://github.com/hug5/hist_purge"
 
 [project]
 name = "hist_purge"
-# authors = [
-#     {name = "Josiah Carberry", email = "josiah_carberry@brown.edu"},
-#     {name = "Your Co-Author", email = "their@email.address"},
-# ]
+authors = [
+    {name = "hug5", email = "dhub2@gmx.com"},
+    # {name = "Your Co-Author", email = "their@email.address"},
+]
 # maintainers = [
 #     {name = "Your Name", email = "your@email.address"}
 # ]
 
-# description = "My package description"
-# readme = "README.rst"
-# license = {file = "LICENSE"}
+description = "Bash history purge, unduplicate, cleanup"
+readme = "README.md"
+license = {file = "LICENSE"}
 # license = {text = "BSD-3-Clause"}
+# license = {text = "MIT License"}
+# license = {text = "Apache License 2.0"}
 
 requires-python = ">=3.8"
 
@@ -130,4 +132,5 @@ version = "0.1"
 [project.scripts]
 # hclean = "history_clean:start"
 hist_purge = "hist_purge:run"
+hist-purge = "hist_purge:run"
 

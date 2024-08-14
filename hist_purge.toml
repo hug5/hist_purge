@@ -1,21 +1,12 @@
 
-# history_source_file = ""
-# history_source_file = "history.txt"
-# history_source_file = "history.txt"
-#history_source_file = "bash_history"
+# Designate your history file:
+history_source_file = "~/.bash_history"
 
-# history_source_file = "~/.bash_history"
-history_source_file = "history2.txt"
-
-# comment out when not testing;
-history_write_file = "history2.txt"
-
-
-# Sort history lines: true or false; lowercase only; true is default;
+# Sort history lines: true or false;
 sort_lines = true
 
 
-
+# Set your afilter rules:
 [filter_rules]
 
   # Exact match
