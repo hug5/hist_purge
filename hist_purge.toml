@@ -4,12 +4,12 @@
 history_source_file = "bash_history"
 
 # Write to different file name; usefulf or testing;
-history_write_file = "history2.txt"
+# history_write_file = "history2.txt"
 
 # Sort history lines: true or false;
 sort_lines = true
 
-
+#######################
 # Set your afilter rules:
 [filter_rules]
 
