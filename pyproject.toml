@@ -64,11 +64,13 @@
 #     # "wheel >= 0.44",  # Seems to work without this
 # ]
 # build-backend = "setuptools.build_meta"
+#
 # $ python -m build .
 
 
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+#
 # $ hatch build
 
 
@@ -134,6 +136,8 @@ version = "0.1"
 # This instructs setuptools to include all files with the .txt extension in your example package. You can then access them using importlib.resources.
 # Not sure how this is used;
 
+# When put py file in /src folder, hatch can't find it; need to do below;
+# However, it's interesting that when using setuptools/build, it is able to find it;
 # Got this from the error message that suggested it;
 [tool.hatch.build.targets.wheel]
 packages = ["src/hist_purge.py"]
