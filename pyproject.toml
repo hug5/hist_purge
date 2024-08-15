@@ -134,6 +134,9 @@ version = "0.1"
 # This instructs setuptools to include all files with the .txt extension in your example package. You can then access them using importlib.resources.
 # Not sure how this is used;
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/hist_purge.py"]
+
 [project.scripts]
 # hclean = "history_clean:start"
 # hist_purge = "hist_purge:run"
