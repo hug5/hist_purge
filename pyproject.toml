@@ -64,9 +64,14 @@
 #     # "wheel >= 0.44",  # Seems to work without this
 # ]
 # build-backend = "setuptools.build_meta"
+# $ python -m build .
+
 
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+# $ hatch build
+
+
 
 [project.urls]
 # Homepage = "https://your.project"
@@ -131,6 +136,6 @@ version = "0.1"
 
 [project.scripts]
 # hclean = "history_clean:start"
-hist_purge = "hist_purge:run"
+# hist_purge = "hist_purge:run"
 hist-purge = "hist_purge:run"
 

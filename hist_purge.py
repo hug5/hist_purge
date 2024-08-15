@@ -15,10 +15,7 @@ class hist_purge():
     def __init__(self):
 
         self.filename = ""
-            # history path/file; from config;
-        # self.bhistory = ''
-        # self.filename_os = ''
-            # history path, fully expanded
+            # history path/file; from config; then expanded;
 
         self.filename_write = ''
             # by default, is self.filename;
@@ -26,8 +23,9 @@ class hist_purge():
 
         self.sort_history = True
             # sort or not sort history
-        self.bfile2 = {}
-            # Original history; then made into set;
+
+        self.bfile2 = []
+            # Original history; then make into set;
         self.bfile3 = []
             # Filtered history list
             # Then optionally sorted;
@@ -87,18 +85,14 @@ class hist_purge():
         except Exception as e:
             self.print_error_traceback(e, "Error Write File")
 
-
         else:
             pass
         finally:
-            # if 'f' in locals(): f.close()
             pass
 
 
     def backup_old_history(self):
         try:
-            # current_time = datetime.now()
-            # dt_string = current_time.strftime("%Y.%m.%d.%H%M%S")
 
             self.std_out("Backup file.")
 
@@ -107,15 +101,15 @@ class hist_purge():
 
             src = str(self.filename)
 
-            # Have to make into string; gets error because using Pathlib; and that's not a string;
+            # Have to make into string; gets error because using Pathlib;
+            # and that's not a string;
             dst = str(src) + "-" + dt_string
             shutil.copyfile(src, dst)
 
 
-        # except:
         except Exception as e:
             self.print_error_traceback(e, "Backup Error")
-            # pass
+
         else:
             pass
         finally:
@@ -123,47 +117,30 @@ class hist_purge():
 
 
     def sort_lines(self):
-        # file_out = ''
 
         if self.sort_history == True:
             self.bfile3 = sorted(self.bfile3)
 
-        # file_out = ''
-        # for line in self.bfile3:
-        #     # x += 1
-        #     # print(x)
-        #     file_out += line + "\n"
-        #     #file_out += "y"
-
         self.file_out = "\n".join(self.bfile3)
-        # self.file_out = file_out
 
-        self.bfile3 = []   # empty out list
-        # self.file_out = file_out
+        # empty out list
+        self.bfile3 = []
 
 
     def exclude_line(self, bline):
 
         for pattern in self.filter_rules['exclude']["exact"]:
             if pattern == bline:
-                # print(pattern + " : " + bline)
-                # print("✕", end ="")
                 return True
 
         for pattern in self.filter_rules['exclude']["containing"]:
             if bline.find(pattern) >= 0:
-                # print(pattern + " : " + bline)
-                # print("✖", end ="")
                 return True
 
         for pattern in self.filter_rules['exclude']["regex"]:
             if re.search(pattern, bline):
-                # print(pattern + " : " + bline)
-                # print("x", end ="")
                 return True
 
-        # print("false")
-        # print(".", end ="")
         return False
 
 
@@ -171,35 +148,21 @@ class hist_purge():
 
         for pattern in self.filter_rules['include']["exact"]:
             if pattern == bline:
-                # print(pattern + " : " + bline)
-                # print("◌", end ="")
-                # sys.stdout.flush()
                 return True
 
         for pattern in self.filter_rules['include']["containing"]:
             if bline.find(pattern) >= 0:
-                # print(pattern + " : " + bline)
-                # print("◍", end ="")
-                # sys.stdout.flush()
                 return True
 
         for pattern in self.filter_rules['include']["regex"]:
             if re.search(pattern, bline):
-                # return True
-                # print(pattern + " : " + bline)
-                # print("o", end ="")
-                # sys.stdout.flush()
                 return True
 
-        # print("false")
-        # print(".", end ="")
-        # sys.stdout.flush()
         return False
 
     def std_out(self, msg, cr = True):
-        # if cr == True: eol = "\n" else: eol = ""
         eol = "\n" if cr == True else ""
-            # Python's fake ternary operator
+            # Python's lame ternary operator
 
         print(msg, end = eol)
         sys.stdout.flush()
@@ -217,35 +180,20 @@ class hist_purge():
             c += 1
             if c % 2500 == 0:
                 self.std_out(ascii_sym, False)
-                # print(ascii_sym, end ="")
-                # sys.stdout.flush()
 
-            # print(".", end ="")
             bline = line.strip()
-            # print(bline)
-
 
             # Check for specific includes;
             if self.include_line(bline) == True:
-                # print("adding1" + bline)
-                # lll = self.add_line(bline)
-                # self.bfile3.append(bline)
-
-                # print("x", end ="")
                 self.bfile3 += [bline]
                 continue
 
             # Check for exclude;
             # If true, then skip;
             if self.exclude_line(bline) == True:
-                # print("excluding2" + bline)
-                # print(".", end ="")
                 continue
 
             # Include everything else
-            # lll = self.add_line(bline)
-            # self.bfile3.append(bline)
-            # print(".", end ="")
             self.bfile3 += [bline]
 
         print(ascii_sym)
@@ -262,7 +210,10 @@ class hist_purge():
 
         try:
             b = set(self.bfile2)
+            # self.bfile2 is a list; then save to b as set;
+            # Sets do not preserve order; sets have no defined order;
 
+            # If NOT sort, then preserve order based on original bfile2
             if not self.sort_history:
 
                 c = []
@@ -274,6 +225,8 @@ class hist_purge():
 
                 self.bfile2 = c
 
+            # If sort, then don't care; set bfile2 = b;
+            # Then later will sort in sort function;
             else:
                 self.bfile2 = b
 
@@ -289,6 +242,7 @@ class hist_purge():
         try:
             with open(self.filename, 'r') as ofile:
                 self.bfile2 = ofile.readlines()
+                # This is loaded as list; later change to set;
 
         except Exception as e:
             self.print_error_traceback(e, "Open File Error")
@@ -316,17 +270,6 @@ class hist_purge():
         # Current folder has precedence; then home; hidden has precedence over normal;
 
         try:
-            ###
-                # if os.path.isfile(config_file2):
-                #     config_path = config_file2
-                # elif os.path.isfile(config_file1):
-                #     config_path = config_file1
-                # elif os.path.isfile(user_home + config_file2):
-                #     config_path = user_home + config_file2
-                # elif os.path.isfile(user_home + config_file1):
-                #     config_path = user_home + config_file1
-                # else:
-                #     raise FileNotFoundError("Could not find " + config_file1 + " conf file")
 
             if Path(config_file2).is_file():
                 config_path = config_file2
@@ -342,11 +285,6 @@ class hist_purge():
         except FileNotFoundError as e:
             self.print_error_traceback(e, "No " + config_file1)
 
-
-
-        # user_config = user_home + ".config"
-        # print(user_home + ", " + user_config)
-        # raise SystemExit
 
 
         try:
@@ -432,15 +370,13 @@ class hist_purge():
             self.print_error_traceback(e, "Config load error.")
             # Hopefully this catches anything else;
 
-        # print(config)
-        # exit()
-        # raise SystemExit
-
 
     # def swatch(self, x, t='start'):
     def swatch(self, x = 'start'):
-        """ To start, do: x = self.swatch()
-        To stop, pass back the variable: self.swatch(x) """
+        """
+        To start, do: x = self.swatch()
+        To stop, pass back the variable: self.swatch(x)
+        """
 
         if x == "start":
             return time.time()
@@ -462,7 +398,6 @@ class hist_purge():
         self.write_file()
 
         print("Done. ", end="")
-
         self.swatch(x)
 
 

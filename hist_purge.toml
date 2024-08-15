@@ -1,6 +1,10 @@
 
 # Designate your history file:
-history_source_file = "~/.bash_history"
+# history_source_file = "~/.bash_history"
+history_source_file = "bash_history"
+
+# Write to different file name; usefulf or testing;
+# history_write_file = "history2.txt"
 
 # Sort history lines: true or false;
 sort_lines = true
@@ -32,7 +36,7 @@ sort_lines = true
 
   # substring match; this matches anywhere;
   containing_include = [
-    #"###",
+    "This is important!!",
   ]
   containing_exclude = [
 
