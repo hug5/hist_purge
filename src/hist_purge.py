@@ -171,7 +171,8 @@ class hist_purge():
     # Read file line by line
     def read_lines(self):
 
-        self.std_out("Begin purge: ", False)
+        # self.std_out("Begin purge: ", False)
+        self.std_out("Begin purge: ")
 
         ascii_sym = "∘ "
         c = 0
