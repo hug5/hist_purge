@@ -1,4 +1,7 @@
-import re, shutil, time, tomli
+import re
+import shutil
+import time
+import tomli
 # import os
 import sys
 from pathlib import Path
