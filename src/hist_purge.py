@@ -61,6 +61,7 @@ class hist_purge():
           # the exception type
 
         raise SystemExit
+          # exit script;
 
         # if e.args: print(e.args)
         # # print(e.args[1])
@@ -146,6 +147,22 @@ class hist_purge():
 
     def include_line(self, bline) :
 
+        # https://stackoverflow.com/questions/52916656/re-search-or-in-re-match-or-startswith
+        # https://stackoverflow.com/questions/180986/what-is-the-difference-between-re-search-and-re-match/8687988#8687988
+        # https://note.nkmk.me/en/python-str-compare/
+        # find, startswith, endswwith
+            # should try to use these; should be faster than regex;
+            # x = txt.startswith("wel")
+            # x = txt.startswith("wel", 7, 20)
+                # Returns True or False
+            # x = txt.endswith(".")
+
+        # re.match, re.search
+            # match also appears to be a regex command, but matching at beginning only;
+
+        # Should have other non-regex options;
+
+
         for pattern in self.filter_rules['include']["exact"]:
             if pattern == bline:
                 return True
@@ -181,6 +198,7 @@ class hist_purge():
             c += 1
             if c % 2500 == 0:
                 self.std_out(ascii_sym, False)
+              # Every so often, output progress;
 
             bline = line.strip()
 
